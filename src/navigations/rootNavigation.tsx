@@ -6,8 +6,11 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import HomeStack from './HomeStack';
 
-type RootBoomParamsList = {
+export type RootBoomParamsList = {
   HomeScreen: undefined;
+  CartScreen: undefined;
+  PaymentScreen: undefined;
+  ProfileScreen: undefined;
 };
 
 const BottomTab = createBottomTabNavigator<RootBoomParamsList>();

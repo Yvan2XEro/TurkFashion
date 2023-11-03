@@ -1,12 +1,11 @@
 import React from 'react';
-import {SafeAreaView} from 'react-native';
-import RootNavigation from '@/navigations/RootNavigation';
+import RootNavigation from '@/navigations/rootNavigation';
 
 function App(): JSX.Element {
   return (
-    <SafeAreaView>
+    <>
       <RootNavigation />
-    </SafeAreaView>
+    </>
   );
 }
 
