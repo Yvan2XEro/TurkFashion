@@ -1,20 +1,31 @@
 import React from 'react';
 import {
+  BottomTabNavigationProp,
   BottomTabScreenProps,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
 import {CustomBottomTabBarButton} from '@/components/moleculs/CustomBottomTabBarButton';
-import {CompositeScreenProps, NavigationProp} from '@react-navigation/core';
-import {RootStackScreenProps} from './root-navigation';
+import {
+  CompositeNavigationProp,
+  CompositeScreenProps,
+  NavigationProp,
+} from '@react-navigation/core';
+import {RootStackParamList, RootStackScreenProps} from './root-navigation';
 import HomeScreen from '@/screens/HomeScreen';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-const BottomTab = createBottomTabNavigator<TabsStackParamList>();
 export type TabsStackParamList = {
-  HomeScreen: undefined;
   CartScreen: undefined;
   PaymentScreen: undefined;
+  HomeScreen: undefined;
   ProfileScreen: undefined;
 };
+
+type TabsStackParamListKey = keyof TabsStackParamList;
+export type UseNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<TabsStackParamList, TabsStackParamListKey, undefined>,
+  NativeStackNavigationProp<RootStackParamList, 'TabsStack', undefined>
+>;
 
 export type TabsStackScreenProps<T extends keyof TabsStackParamList> =
   CompositeScreenProps<
@@ -22,6 +33,8 @@ export type TabsStackScreenProps<T extends keyof TabsStackParamList> =
     RootStackScreenProps<'TabsStack'>
   >;
 export type TabsNavigationProps = NavigationProp<TabsStackParamList>;
+
+const BottomTab = createBottomTabNavigator<TabsStackParamList>();
 
 export default function HomeStack() {
   return (

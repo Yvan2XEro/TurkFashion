@@ -12,10 +12,11 @@ import {
 } from '@react-navigation/native-stack';
 import HomeStack, {TabsStackParamList} from './tab-navigation';
 import {StatusBar, useColorScheme} from 'react-native';
+import DetailsScreen from '@/screens/DetailsScreen';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;
-  Details: {
+  DetailsScreen: {
     id: string;
   };
 };
@@ -30,6 +31,7 @@ function RootNavigationWithoutContainer() {
       screenOptions={{headerShown: false}}
       initialRouteName="TabsStack">
       <BottomTab.Screen name="TabsStack" component={HomeStack} />
+      <BottomTab.Screen name="DetailsScreen" component={DetailsScreen} />
     </BottomTab.Navigator>
   );
 }

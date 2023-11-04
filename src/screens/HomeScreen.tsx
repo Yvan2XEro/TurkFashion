@@ -7,8 +7,11 @@ import {GridCollection} from '@/components/organims/GridCollection';
 import {CategoriesList} from '@/components/moleculs/CategoriesList';
 import {useTheme} from '@react-navigation/native';
 import {ProductsList} from '@/components/organims/ProductsList';
+import {TabsStackScreenProps} from '@/navigations/tab-navigation';
 
-export default function HomeScreen() {
+export default function HomeScreen({
+  navigation,
+}: TabsStackScreenProps<'HomeScreen'>) {
   const {colors} = useTheme();
   return (
     <ScrollView
