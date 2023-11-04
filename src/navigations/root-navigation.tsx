@@ -4,21 +4,14 @@ import {
   Theme,
   DarkTheme,
   DefaultTheme,
-  CompositeScreenProps,
   NavigatorScreenParams,
 } from '@react-navigation/native';
-import {
-  BottomTabBarProps,
-  BottomTabScreenProps,
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
 import {
   createNativeStackNavigator,
   type NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import HomeStack, {TabsStackParamList} from './tab-navigation';
-import {StatusBar, StatusBarStyle, useColorScheme} from 'react-native';
-import {CustomBottomTabBarButton} from '@/components/moleculs/CustomBottomTabBarButton';
+import {StatusBar, useColorScheme} from 'react-native';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;

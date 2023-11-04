@@ -1,10 +1,4 @@
-import {View, Text} from 'react-native';
 import React from 'react';
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-  createNativeStackNavigator,
-} from '@react-navigation/native-stack';
 import {
   BottomTabScreenProps,
   createBottomTabNavigator,
@@ -14,7 +8,6 @@ import {CompositeScreenProps, NavigationProp} from '@react-navigation/core';
 import {RootStackScreenProps} from './root-navigation';
 import HomeScreen from '@/screens/HomeScreen';
 
-const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator<TabsStackParamList>();
 export type TabsStackParamList = {
   HomeScreen: undefined;

@@ -51,6 +51,8 @@ export default function CustomBottomTabBarButton(props: TProps) {
           color={active ? colors.card : colors.text}
           style={{
             opacity: active ? 1 : 0.5,
+            marginRight: active ? 6 : 0,
+            marginBottom: active ? 6 : 0,
           }}
         />
       </View>

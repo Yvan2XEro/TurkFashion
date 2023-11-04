@@ -48,7 +48,7 @@ export default function HiUser() {
           borderWidth: 1,
           borderColor: colors.border,
         }}>
-        <IonIcons name="notifications" size={24} color={colors.text} />
+        <IonIcons name="notifications-outline" size={24} color={colors.text} />
       </TouchableOpacity>
     </View>
   );
