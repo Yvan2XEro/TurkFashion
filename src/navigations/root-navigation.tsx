@@ -27,10 +27,14 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
 const BottomTab = createNativeStackNavigator<RootStackParamList>();
 function RootNavigationWithoutContainer() {
   return (
-    <BottomTab.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName="TabsStack">
-      <BottomTab.Screen name="TabsStack" component={HomeStack} />
+    <BottomTab.Navigator initialRouteName="TabsStack">
+      <BottomTab.Screen
+        name="TabsStack"
+        component={HomeStack}
+        options={{
+          headerShown: false,
+        }}
+      />
       <BottomTab.Screen name="DetailsScreen" component={DetailsScreen} />
     </BottomTab.Navigator>
   );

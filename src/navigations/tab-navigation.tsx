@@ -13,6 +13,9 @@ import {
 import {RootStackParamList, RootStackScreenProps} from './root-navigation';
 import HomeScreen from '@/screens/HomeScreen';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import CartScreen from '@/screens/CartScreen';
+import PaymentScreen from '@/screens/PaymentScreen';
+import ProfileScreen from '@/screens/ProfileScreen';
 
 export type TabsStackParamList = {
   CartScreen: undefined;
@@ -60,7 +63,7 @@ export default function HomeStack() {
       />
       <BottomTab.Screen
         name="CartScreen"
-        component={HomeScreen}
+        component={CartScreen}
         options={{
           tabBarIcon: ({color, focused}) => (
             <CustomBottomTabBarButton
@@ -75,7 +78,7 @@ export default function HomeStack() {
       />
       <BottomTab.Screen
         name="PaymentScreen"
-        component={HomeScreen}
+        component={PaymentScreen}
         options={{
           tabBarIcon: ({color, focused}) => (
             <CustomBottomTabBarButton
@@ -90,7 +93,7 @@ export default function HomeStack() {
       />
       <BottomTab.Screen
         name="ProfileScreen"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({color, focused}) => (
             <CustomBottomTabBarButton
