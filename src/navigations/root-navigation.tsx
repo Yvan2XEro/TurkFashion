@@ -24,19 +24,20 @@ export type RootStackParamList = {
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, T>;
 
-const BottomTab = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigationWithoutContainer() {
   return (
-    <BottomTab.Navigator initialRouteName="TabsStack">
-      <BottomTab.Screen
+    <Stack.Navigator initialRouteName="TabsStack">
+      <Stack.Screen
         name="TabsStack"
         component={HomeStack}
         options={{
           headerShown: false,
+          presentation: 'modal',
         }}
       />
-      <BottomTab.Screen name="DetailsScreen" component={DetailsScreen} />
-    </BottomTab.Navigator>
+      <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+    </Stack.Navigator>
   );
 }
 

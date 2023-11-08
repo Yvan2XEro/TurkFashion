@@ -44,7 +44,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
           overflow: 'hidden',
           borderRadius: 24,
         }}>
-        <Animated.View
+        <View
           // sharedTransitionTag={data.title + index}
           style={StyleSheet.absoluteFill}>
           <Image
@@ -54,7 +54,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
             resizeMode="cover"
             style={StyleSheet.absoluteFill}
           />
-        </Animated.View>
+        </View>
 
         <View
           style={[

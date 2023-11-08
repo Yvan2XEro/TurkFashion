@@ -3,7 +3,6 @@ import React from 'react';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTheme} from '@react-navigation/native';
-import Animated from 'react-native-reanimated';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const CustomBottomTabs = (props: BottomTabBarProps) => {
@@ -59,7 +58,7 @@ const TabItem = ({
         flexDirection: 'row',
         paddingVertical: 8,
       }}>
-      <Animated.View
+      <View
         style={[
           {
             width: 36,
@@ -78,7 +77,7 @@ const TabItem = ({
             opacity: isActive ? 1 : 0.5,
           }}
         />
-      </Animated.View>
+      </View>
       {isActive && (
         <Text
           style={{

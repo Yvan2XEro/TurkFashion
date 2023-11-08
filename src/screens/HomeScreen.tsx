@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView, Text, TouchableOpacity} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {HiUser} from '@/components/atoms/HiUser';
 import {SCREEN_PADDING_HORIZONTAL, SECTIONS_GAP} from '@/constants';
@@ -7,17 +7,14 @@ import {GridCollection} from '@/components/organims/GridCollection';
 import {CategoriesList} from '@/components/moleculs/CategoriesList';
 import {useTheme} from '@react-navigation/native';
 import {ProductsList} from '@/components/organims/ProductsList';
-import {TabsStackScreenProps} from '@/navigations/tab-navigation';
 
-export default function HomeScreen({
-  navigation,
-}: TabsStackScreenProps<'HomeScreen'>) {
+export default function HomeScreen() {
   const {colors} = useTheme();
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      style={{paddingHorizontal: SCREEN_PADDING_HORIZONTAL}}>
-      <SafeAreaView style={{paddingVertical: 24, gap: SECTIONS_GAP}}>
+      style={{paddingHorizontal: SCREEN_PADDING_HORIZONTAL, flex: 1}}>
+      <View style={{paddingVertical: 24, gap: SECTIONS_GAP}}>
         <HiUser />
         <AppSearchBar />
         <CategoriesList />
@@ -84,7 +81,7 @@ export default function HomeScreen({
             },
           ]}
         />
-      </SafeAreaView>
+      </View>
     </ScrollView>
   );
 }
