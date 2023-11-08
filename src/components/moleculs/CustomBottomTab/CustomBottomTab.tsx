@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, Pressable} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import React from 'react';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {SafeAreaView} from 'react-native-safe-area-context';

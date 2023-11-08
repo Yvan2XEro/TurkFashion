@@ -1,9 +1,7 @@
 import {View, Text, Pressable} from 'react-native';
-import React, {ReactNode} from 'react';
-import {BottomTabBarButtonProps} from '@react-navigation/bottom-tabs';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {NavigationProp, useNavigation} from '@react-navigation/core';
-import {RootStackScreenProps} from '@/navigations/root-navigation';
+import {useNavigation} from '@react-navigation/core';
 import {
   TabsNavigationProps,
   TabsStackParamList,
