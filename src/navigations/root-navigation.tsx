@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   NavigationContainer,
   Theme,
@@ -13,6 +13,9 @@ import {
 import HomeStack, {TabsStackParamList} from './tab-navigation';
 import {StatusBar, useColorScheme} from 'react-native';
 import DetailsScreen from '@/screens/DetailsScreen';
+import AuthNavigator from './auth-navigator';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import {useAuthStore} from '@/store/useAuthStore';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;
@@ -26,18 +29,47 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigationWithoutContainer() {
+  const colorScheme = useColorScheme();
+  const {onUserChange, user} = useAuthStore();
+
+  const [initializing, setInitializing] = useState(true);
+
+  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+    onUserChange(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (!user) {
+    return (
+      <>
+        <StatusBar translucent backgroundColor="transparent" />
+        <AuthNavigator />
+      </>
+    );
+  }
   return (
-    <Stack.Navigator initialRouteName="TabsStack">
-      <Stack.Screen
-        name="TabsStack"
-        component={HomeStack}
-        options={{
-          headerShown: false,
-          presentation: 'modal',
-        }}
+    <>
+      <Stack.Navigator initialRouteName="TabsStack">
+        <Stack.Screen
+          name="TabsStack"
+          component={HomeStack}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+      </Stack.Navigator>
+      <StatusBar
+        backgroundColor={colorScheme === 'dark' ? '#000000' : '#f5f5f5'}
+        barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
       />
-      <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
-    </Stack.Navigator>
+    </>
   );
 }
 
@@ -70,10 +102,6 @@ export default function RootNavigation() {
   return (
     <NavigationContainer theme={theme}>
       <RootNavigationWithoutContainer />
-      <StatusBar
-        backgroundColor={colorScheme === 'dark' ? '#000000' : '#f5f5f5'}
-        barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
-      />
     </NavigationContainer>
   );
 }

@@ -7,6 +7,7 @@ import {GridCollection} from '@/components/organims/GridCollection';
 import {CategoriesList} from '@/components/moleculs/CategoriesList';
 import {useTheme} from '@react-navigation/native';
 import {ProductsList} from '@/components/organims/ProductsList';
+import data from '@/constants/data.json';
 
 export default function HomeScreen() {
   const {colors} = useTheme();
@@ -25,62 +26,9 @@ export default function HomeScreen() {
               <Text style={{color: colors.text}}>See all</Text>
             </TouchableOpacity>
           }
-          items={[
-            {
-              id: 1,
-              image:
-                'https://images.unsplash.com/photo-1627225924765-552d49cf47ad?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80',
-              price: 130,
-              title: 'PUMA Everyday Hussle',
-            },
-          ]}
+          items={data.reverse()}
         />
-        <ProductsList
-          data={[
-            {
-              id: 1,
-              image:
-                'https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80',
-              price: 130,
-              title: 'PUMA Everyday Hussle',
-            },
-            {
-              id: 2,
-              image:
-                'https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80',
-              price: 130,
-              title: 'PUMA Everyday Hussle',
-            },
-            {
-              id: 3,
-              image:
-                'https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80',
-              price: 130,
-              title: 'PUMA Everyday Hussle',
-            },
-            {
-              id: 4,
-              image:
-                'https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80',
-              price: 130,
-              title: 'PUMA Everyday Hussle',
-            },
-            {
-              id: 5,
-              image:
-                'https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80',
-              price: 130,
-              title: 'PUMA Everyday Hussle',
-            },
-            {
-              id: 6,
-              image:
-                'https://images.unsplash.com/photo-1564584217132-2271feaeb3c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80',
-              price: 130,
-              title: 'PUMA Everyday Hussle',
-            },
-          ]}
-        />
+        <ProductsList data={data} />
       </View>
     </ScrollView>
   );

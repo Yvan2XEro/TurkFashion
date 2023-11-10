@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Touchable,
-} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
 import {Product} from '@/types/models';
@@ -16,7 +9,6 @@ import {
   useNavigation,
   useTheme,
 } from '@react-navigation/native';
-import Animated from 'react-native-reanimated';
 
 import {RootStackParamList} from '@/navigations/root-navigation';
 
@@ -77,7 +69,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
                 },
                 textShadowRadius: 4,
               }}>
-              {data.title}
+              {data.name}
             </Text>
             <View
               style={{
