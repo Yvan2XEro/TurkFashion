@@ -11,11 +11,12 @@ import {
   type NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import HomeStack, {TabsStackParamList} from './tab-navigation';
-import {StatusBar, useColorScheme} from 'react-native';
+import {ActivityIndicator, StatusBar, useColorScheme} from 'react-native';
 import DetailsScreen from '@/screens/DetailsScreen';
 import AuthNavigator from './auth-navigator';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {useAuthStore} from '@/store/useAuthStore';
+import AppProviders from '@/context/AppProviders';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;
@@ -101,7 +102,9 @@ export default function RootNavigation() {
 
   return (
     <NavigationContainer theme={theme}>
-      <RootNavigationWithoutContainer />
+      <AppProviders>
+        <RootNavigationWithoutContainer />
+      </AppProviders>
     </NavigationContainer>
   );
 }

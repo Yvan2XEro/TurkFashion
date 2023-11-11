@@ -1,8 +1,8 @@
-import {ImageBackground, StatusBar, Platform} from 'react-native';
+import {ImageBackground} from 'react-native';
 import React, {PropsWithChildren} from 'react';
+import {paddingTop} from '@/constants/layout';
 
 export default function AuthScreenWrapper({children}: PropsWithChildren) {
-  const paddingTop = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
   return (
     <ImageBackground
       source={{uri: 'https://picsum.photos/2000'}}

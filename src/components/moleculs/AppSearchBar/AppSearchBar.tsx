@@ -3,9 +3,12 @@ import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {useAppBottomSheet} from '@/context/app-bottom-sheet';
+import {AppFilterForm} from '@/components/organims/AppFilterForm';
 
 export default function AppSearchBar() {
   const {colors} = useTheme();
+  const {presentAppBottomSheet} = useAppBottomSheet();
 
   return (
     <View style={{flexDirection: 'row', gap: 12}}>
@@ -39,7 +42,9 @@ export default function AppSearchBar() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        // onPress={openFilterModal}
+        onPress={() => {
+          presentAppBottomSheet(<AppFilterForm />);
+        }}
         style={{
           width: 52,
           aspectRatio: 1,

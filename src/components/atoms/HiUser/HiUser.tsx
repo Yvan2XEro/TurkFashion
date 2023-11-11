@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useAuthStore} from '@/store/useAuthStore';
 import auth from '@react-native-firebase/auth';
-auth().signOut();
+// auth().signOut();
 const AVATAR_URL =
   'https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80';
 
@@ -21,7 +21,7 @@ export default function HiUser() {
       }}>
       <Image
         source={{
-          uri: AVATAR_URL,
+          uri: user?.photoURL || AVATAR_URL,
         }}
         style={{width: 52, aspectRatio: 1, borderRadius: 52}}
         resizeMode="cover"

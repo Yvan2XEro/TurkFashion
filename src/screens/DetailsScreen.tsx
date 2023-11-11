@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Share,
+  StatusBar,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Animated, {
@@ -18,6 +19,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/core';
 import {useTheme} from '@react-navigation/native';
+import {paddingTop} from '@/constants/layout';
 
 const {width} = Dimensions.get('window');
 const IMG_HEIGHT = 300;
@@ -34,12 +36,15 @@ const DetailsPage = () => {
       headerTransparent: true,
 
       headerBackground: () => (
-        <Animated.View
-          style={[
-            headerAnimatedStyle,
-            styles.header,
-            {backgroundColor: colors.card, borderColor: colors.border},
-          ]}></Animated.View>
+        <>
+          <Animated.View
+            style={[
+              headerAnimatedStyle,
+              styles.header,
+              {paddingTop},
+              {backgroundColor: colors.card, borderColor: colors.border},
+            ]}></Animated.View>
+        </>
       ),
       headerRight: () => (
         <View style={styles.bar}>
