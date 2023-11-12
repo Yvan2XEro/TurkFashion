@@ -11,7 +11,7 @@ import {
   type NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import HomeStack, {TabsStackParamList} from './tab-navigation';
-import {ActivityIndicator, StatusBar, useColorScheme} from 'react-native';
+import {StatusBar, useColorScheme} from 'react-native';
 import DetailsScreen from '@/screens/DetailsScreen';
 import AuthNavigator from './auth-navigator';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';

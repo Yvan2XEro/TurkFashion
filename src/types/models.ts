@@ -1,3 +1,4 @@
+
 export type Product = {
     uuid: string,
     name: string,
@@ -17,5 +18,11 @@ export type SubCategory = {
     name: string
     photoUrl: string
     categoryUuid: string
-    // filters: string[]
+    filters: string[]
+}
+
+export type Filter = {
+    label: string
+    values: string[]
+    uuid: string
 }

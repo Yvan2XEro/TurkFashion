@@ -1,16 +1,13 @@
-import {View, Text, FlatList, TouchableOpacity} from 'react-native';
+import {Text, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
-import useCollectionData from '@/hooks/useCollectionData';
-import {Category} from '@/types/models';
 import {SubCategoriesList} from '../SubCategoriesList';
+import {useFiltersStore} from '@/store/useFiltersStore';
 
 export default function CategoriesList() {
   const {colors} = useTheme();
 
-  const {data: categories} = useCollectionData<Category>({
-    collection: 'categories',
-  });
+  const {categories, setActiveCategory} = useFiltersStore();
 
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
     null,
@@ -36,7 +33,10 @@ export default function CategoriesList() {
           const isSelected = selectedCategory === item.uuid;
           return (
             <TouchableOpacity
-              onPress={() => setSelectedCategory(item.uuid)}
+              onPress={() => {
+                setActiveCategory(item.uuid);
+                setSelectedCategory(item.uuid);
+              }}
               style={{
                 backgroundColor: isSelected ? colors.primary : colors.card,
                 paddingHorizontal: 20,

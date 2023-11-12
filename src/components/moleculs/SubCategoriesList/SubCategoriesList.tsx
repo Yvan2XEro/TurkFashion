@@ -1,17 +1,14 @@
 import {View, Text, FlatList, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
-import {SubCategory} from '@/types/models';
-import useCollectionData from '@/hooks/useCollectionData';
+import {useFiltersStore} from '@/store/useFiltersStore';
 
 type TProps = {
   category: string;
 };
 export default function SubCategoriesList({category}: TProps) {
   const {colors} = useTheme();
-  const {data: subCategories} = useCollectionData<SubCategory>({
-    collection: 'subcategories',
-  });
+  const {subCategories, setActiveSubCategory} = useFiltersStore();
   const [selectedSubCategory, setSelectedSubCategory] = React.useState<
     string | null
   >(null);
@@ -30,7 +27,10 @@ export default function SubCategoriesList({category}: TProps) {
         return (
           <View style={{alignItems: 'center', gap: 3}}>
             <TouchableOpacity
-              onPress={() => setSelectedSubCategory(item.uuid)}
+              onPress={() => {
+                setSelectedSubCategory(item.uuid);
+                setActiveSubCategory(item.uuid);
+              }}
               style={{
                 backgroundColor: isSelected ? colors.primary : colors.card,
                 borderRadius: 100,

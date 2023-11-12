@@ -34,24 +34,22 @@ export function AppBottomSheetProvider({children}: PropsWithChildren) {
     <AppBottomSheetContext.Provider
       value={{presentAppBottomSheet, dismissAppBottomSheet}}>
       {children}
-      {!!component && (
-        <BottomSheetModalProvider>
-          <BottomSheetModal
-            snapPoints={['85%']}
-            index={0}
-            ref={bottomSheetModalRef}
-            backdropComponent={props => <AppSheetBackdrop {...props} />}
-            backgroundStyle={{
-              borderRadius: 24,
-              backgroundColor: colors.card,
-            }}
-            handleIndicatorStyle={{
-              backgroundColor: colors.primary,
-            }}>
-            {component}
-          </BottomSheetModal>
-        </BottomSheetModalProvider>
-      )}
+      <BottomSheetModalProvider>
+        <BottomSheetModal
+          snapPoints={['85%']}
+          index={0}
+          ref={bottomSheetModalRef}
+          backdropComponent={props => <AppSheetBackdrop {...props} />}
+          backgroundStyle={{
+            borderRadius: 24,
+            backgroundColor: colors.card,
+          }}
+          handleIndicatorStyle={{
+            backgroundColor: colors.primary,
+          }}>
+          {component}
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
     </AppBottomSheetContext.Provider>
   );
 }
