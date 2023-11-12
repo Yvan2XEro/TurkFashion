@@ -66,34 +66,33 @@ const AppFilterForm = () => {
   const insets = useSafeAreaInsets();
   return (
     <View style={{flex: 1}}>
-      <BottomSheetView style={{flex: 1}}>
-        <View style={{paddingVertical: 24, gap: 24}}>
-          <View
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: 24,
+        }}>
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 20,
+            fontWeight: '700',
+            color: theme.colors.text,
+          }}>
+          Filters
+        </Text>
+        <TouchableOpacity>
+          <Text
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 24,
+              color: theme.colors.text,
+              opacity: 0.5,
             }}>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 20,
-                fontWeight: '700',
-                color: theme.colors.text,
-              }}>
-              Filters
-            </Text>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  color: theme.colors.text,
-                  opacity: 0.5,
-                }}>
-                Reset
-              </Text>
-            </TouchableOpacity>
-          </View>
-
+            Reset
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <BottomSheetScrollView style={{flex: 1}}>
+        <View style={{paddingVertical: 24, gap: 24}}>
           {/* Range Selector */}
 
           {/* <PriceRangeSelector
@@ -170,7 +169,7 @@ const AppFilterForm = () => {
             </View>
           </View>
         </View>
-      </BottomSheetView>
+      </BottomSheetScrollView>
       {/* Button */}
 
       <View
