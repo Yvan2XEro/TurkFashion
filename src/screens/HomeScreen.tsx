@@ -7,10 +7,15 @@ import {GridCollection} from '@/components/organims/GridCollection';
 import {CategoriesList} from '@/components/moleculs/CategoriesList';
 import {useTheme} from '@react-navigation/native';
 import {ProductsList} from '@/components/organims/ProductsList';
-import data from '@/constants/data.json';
+import useCollectionData from '@/hooks/useCollectionData';
+import {Product} from '@/types/models';
 
 export default function HomeScreen() {
   const {colors} = useTheme();
+  const {data} = useCollectionData<Product>({
+    collection: 'products',
+  });
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -26,9 +31,9 @@ export default function HomeScreen() {
               <Text style={{color: colors.text}}>See all</Text>
             </TouchableOpacity>
           }
-          items={data.reverse()}
+          items={data?.reverse() || []}
         />
-        <ProductsList data={data} />
+        <ProductsList data={data || []} />
       </View>
     </ScrollView>
   );

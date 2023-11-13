@@ -8,21 +8,16 @@ type UseCollectionProps = {
 
 const ft = firestore();
 
-type CollectionResponseData<T = FirebaseFirestoreTypes.DocumentData> = {
-    data: T[] | null;
-    isLoading: boolean;
-    error: any;
-};
+type CollectionResponseData<T = FirebaseFirestoreTypes.DocumentData> = T[] | null;
 
 export default function useCollectionData<T extends FirebaseFirestoreTypes.DocumentData>({
     collection,
     customQuery,
 }: UseCollectionProps) {
-    const [data, setData] = useState<CollectionResponseData<T>>({
-        data: null,
-        isLoading: true,
-        error: null,
-    });
+    const [data, setData] = useState<CollectionResponseData<T>>(null);
+
+    const [isLoading, setIsLoading] = useState(!data);
+    const [error, setError] = useState<any>(null);
 
     useEffect(() => {
         let query = ft.collection<T>(collection);
@@ -31,10 +26,14 @@ export default function useCollectionData<T extends FirebaseFirestoreTypes.Docum
             const subscriber = customQuery<T>(query).onSnapshot(
                 (querySnapshot) => {
                     const data = querySnapshot.docs.map((doc) => doc.data());
-                    setData({ data, error: null, isLoading: false });
+                    setData(data);
+                    setIsLoading(false);
+                    setError(null);
                 },
                 (error) => {
-                    setData({ data: null, error, isLoading: false });
+
+                    setIsLoading(false);
+                    setError(error);
                 }
             );
 
@@ -44,15 +43,17 @@ export default function useCollectionData<T extends FirebaseFirestoreTypes.Docum
         const subscriber = query.onSnapshot(
             (querySnapshot) => {
                 const data = querySnapshot.docs.map((doc) => doc.data());
-                setData({ data, error: null, isLoading: false });
+                setData(data);
             },
             (error) => {
-                setData({ data: null, error, isLoading: false });
+
+                setIsLoading(false);
+                setError(error);
             }
         );
 
         return () => subscriber();
     }, [collection, customQuery]);
 
-    return data;
+    return { data, isLoading, error };
 }

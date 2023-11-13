@@ -3,8 +3,10 @@ export type Product = {
     uuid: string,
     name: string,
     price: number,
-    image: string
+    photoUrl: string
     description?: string
+    categoryUuid: string
+    subCategoryUuid: string
 }
 
 export type Category = {

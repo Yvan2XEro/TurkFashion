@@ -1,19 +1,28 @@
+import useCollectionData from '@/hooks/useCollectionData';
 import {useTheme} from '@react-navigation/native';
 import {ReactNode} from 'react';
-import {Text} from 'react-native';
-import {View} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 
 type TProps = {
   isSelected: boolean;
   label: string;
-  itemCount: number;
   left?: ReactNode;
+  filterKey: string;
+  filterValue: string;
+  onPress: () => void;
 };
-const Chip = ({isSelected, label, itemCount, left}: TProps) => {
+const FilterChip = (props: TProps) => {
+  const {isSelected, label, left, filterKey, filterValue, onPress} = props;
   const theme = useTheme();
 
+  const {data} = useCollectionData({
+    collection: 'products',
+    customQuery: collectionRef =>
+      collectionRef.where(filterKey, '==', filterValue) as any,
+  });
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPress}
       style={{
         paddingHorizontal: 16,
         paddingVertical: 10,
@@ -30,9 +39,9 @@ const Chip = ({isSelected, label, itemCount, left}: TProps) => {
           fontSize: 14,
           color: isSelected ? theme.colors.background : theme.colors.text,
         }}>
-        {label} [{itemCount}]
+        {label} {!!data && <>[{data.length}]</>}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
-export default Chip;
+export default FilterChip;

@@ -18,7 +18,7 @@ export default function ProductCard({data, onPress}: TProps) {
       }}>
       <Image
         source={{
-          uri: data.image,
+          uri: data.photoUrl,
         }}
         resizeMode="cover"
         style={{

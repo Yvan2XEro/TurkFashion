@@ -1,13 +1,44 @@
-import {View, Text} from 'react-native';
-import React from 'react';
+import {View, Text, ActivityIndicator} from 'react-native';
+import React, {useCallback} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {TouchableOpacity} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '@react-navigation/native';
+import useCollectionData from '@/hooks/useCollectionData';
+import {useFiltersStore} from '@/store/useFiltersStore';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 export default function FilterButton() {
   const insets = useSafeAreaInsets();
+  const {activeFilters, activeCategory, activeSubCategory, minPrice, maxPrice} =
+    useFiltersStore();
   const theme = useTheme();
+  const customQuery = useCallback(
+    (collectionRef: FirebaseFirestoreTypes.CollectionReference) => {
+      let query = collectionRef;
+      if (activeCategory) {
+        query = query.where('categoryUuid', '==', activeCategory) as any;
+      }
+      if (activeSubCategory) {
+        query = query.where('subCategoryUuid', '==', activeSubCategory) as any;
+      }
+      if (minPrice) {
+        query = query.where('price', '>=', minPrice) as any;
+      }
+      if (maxPrice) {
+        query = query.where('price', '<=', maxPrice) as any;
+      }
+      Object.entries(activeFilters).forEach(([key, value]) => {
+        query = query.where(key, '==', value) as any;
+      });
+      return query as any;
+    },
+    [activeFilters, activeCategory, activeSubCategory, minPrice, maxPrice],
+  );
+  const {data, isLoading} = useCollectionData({
+    collection: 'products',
+    customQuery,
+  });
 
   return (
     <View
@@ -30,7 +61,7 @@ export default function FilterButton() {
             fontWeight: '600',
             color: theme.colors.background,
           }}>
-          Apply filters
+          Apply filters {!!data && <>[{data?.length || 0}]</>}
         </Text>
 
         <View
@@ -46,7 +77,15 @@ export default function FilterButton() {
             right: 12,
             bottom: 12,
           }}>
-          <IonIcons name="arrow-forward" size={24} color={theme.colors.text} />
+          {isLoading ? (
+            <ActivityIndicator color={theme.colors.primary} />
+          ) : (
+            <IonIcons
+              name="arrow-forward"
+              size={24}
+              color={theme.colors.text}
+            />
+          )}
         </View>
       </TouchableOpacity>
     </View>
