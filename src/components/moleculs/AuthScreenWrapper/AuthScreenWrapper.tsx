@@ -6,7 +6,7 @@ export default function AuthScreenWrapper({children}: PropsWithChildren) {
   return (
     <ImageBackground
       source={{uri: 'https://picsum.photos/2000'}}
-      blurRadius={10}
+      blurRadius={2}
       style={{paddingTop, flex: 1}}>
       {children}
     </ImageBackground>

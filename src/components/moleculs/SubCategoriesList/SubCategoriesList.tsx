@@ -5,13 +5,13 @@ import {useFiltersStore} from '@/store/useFiltersStore';
 
 type TProps = {
   category: string;
+  selectedSubCategory: string | null;
+  setSelectedSubCategory: React.Dispatch<React.SetStateAction<string | null>>;
 };
-export default function SubCategoriesList({category}: TProps) {
+export default function SubCategoriesList(props: TProps) {
+  const {category, selectedSubCategory, setSelectedSubCategory} = props;
   const {colors} = useTheme();
   const {subCategories, setActiveSubCategory} = useFiltersStore();
-  const [selectedSubCategory, setSelectedSubCategory] = React.useState<
-    string | null
-  >(null);
 
   return (
     <FlatList

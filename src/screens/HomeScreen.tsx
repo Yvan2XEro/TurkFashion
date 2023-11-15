@@ -5,36 +5,65 @@ import {SCREEN_PADDING_HORIZONTAL, SECTIONS_GAP} from '@/constants';
 import {AppSearchBar} from '@/components/moleculs/AppSearchBar';
 import {GridCollection} from '@/components/organims/GridCollection';
 import {CategoriesList} from '@/components/moleculs/CategoriesList';
-import {useTheme} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from '@react-navigation/native';
 import {ProductsList} from '@/components/organims/ProductsList';
 import useCollectionData from '@/hooks/useCollectionData';
 import {Product} from '@/types/models';
+import {ProductDetailsCard} from '@/components/moleculs/ProductDetailsCard';
+import {RootStackParamList} from '@/navigations/root-navigation';
 
 export default function HomeScreen() {
   const {colors} = useTheme();
   const {data} = useCollectionData<Product>({
     collection: 'products',
   });
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
+    null,
+  );
+  const [selectedSubCategory, setSelectedSubCategory] = React.useState<
+    string | null
+  >(null);
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={{paddingHorizontal: SCREEN_PADDING_HORIZONTAL, flex: 1}}>
+    <View style={{paddingHorizontal: SCREEN_PADDING_HORIZONTAL}}>
       <View style={{paddingVertical: 24, gap: SECTIONS_GAP}}>
         <HiUser />
         <AppSearchBar />
-        <CategoriesList />
-        <GridCollection
-          title="New Arrivals"
-          rightButton={
-            <TouchableOpacity>
-              <Text style={{color: colors.text}}>See all</Text>
-            </TouchableOpacity>
-          }
-          items={data?.reverse() || []}
+        <CategoriesList
+          selectedCategory={selectedCategory}
+          setSelectedCategory={(category: string | null) => {
+            setSelectedCategory(category);
+            setSelectedSubCategory(null);
+          }}
+          selectedSubCategory={selectedSubCategory}
+          setSelectedSubCategory={setSelectedSubCategory}
         />
-        <ProductsList data={data || []} />
+        {!selectedCategory && (
+          <GridCollection
+            title="New Arrivals"
+            rightButton={
+              <TouchableOpacity>
+                <Text style={{color: colors.text}}>See all</Text>
+              </TouchableOpacity>
+            }
+            items={data?.reverse() || []}
+          />
+        )}
+        {!!selectedCategory && (
+          <ProductsList
+            filters={{
+              categoryUuid: selectedCategory,
+              subCategoryUuid: selectedSubCategory,
+            }}
+          />
+        )}
       </View>
-    </ScrollView>
+    </View>
   );
 }

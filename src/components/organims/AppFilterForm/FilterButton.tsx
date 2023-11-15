@@ -13,28 +13,29 @@ export default function FilterButton() {
   const {activeFilters, activeCategory, activeSubCategory, minPrice, maxPrice} =
     useFiltersStore();
   const theme = useTheme();
-  const customQuery = useCallback(
-    (collectionRef: FirebaseFirestoreTypes.CollectionReference) => {
-      let query = collectionRef;
-      if (activeCategory) {
-        query = query.where('categoryUuid', '==', activeCategory) as any;
-      }
-      if (activeSubCategory) {
-        query = query.where('subCategoryUuid', '==', activeSubCategory) as any;
-      }
-      if (minPrice) {
-        query = query.where('price', '>=', minPrice) as any;
-      }
-      if (maxPrice) {
-        query = query.where('price', '<=', maxPrice) as any;
-      }
-      Object.entries(activeFilters).forEach(([key, value]) => {
-        query = query.where(key, '==', value) as any;
-      });
-      return query as any;
-    },
-    [activeFilters, activeCategory, activeSubCategory, minPrice, maxPrice],
-  );
+  const customQuery = (
+    collectionRef: FirebaseFirestoreTypes.CollectionReference,
+  ) => {
+    let query = collectionRef;
+    if (activeCategory) {
+      query = query.where('categoryUuid', '==', activeCategory) as any;
+    }
+    if (activeSubCategory) {
+      query = query.where('subCategoryUuid', '==', activeSubCategory) as any;
+    }
+    if (minPrice && minPrice.length > 0) {
+      query = query.where('price', '>=', +minPrice) as any;
+    }
+    if (maxPrice && maxPrice.length > 0) {
+      query = query.where('price', '<=', +maxPrice) as any;
+    }
+    Object.entries(activeFilters).forEach(([key, value]) => {
+      query = query.where(key, '==', value) as any;
+    });
+    return query as any;
+  };
+  // [activeFilters, activeCategory, activeSubCategory, minPrice, maxPrice],
+  // );
   const {data, isLoading} = useCollectionData({
     collection: 'products',
     customQuery,

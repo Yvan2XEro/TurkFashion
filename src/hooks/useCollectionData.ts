@@ -1,4 +1,4 @@
-import firestore, { FirebaseFirestoreTypes, firebase } from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useEffect, useState } from 'react';
 
 type UseCollectionProps = {

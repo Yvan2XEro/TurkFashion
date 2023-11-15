@@ -20,14 +20,18 @@ import Animated, {
 import {useNavigation} from '@react-navigation/core';
 import {useTheme} from '@react-navigation/native';
 import {paddingTop} from '@/constants/layout';
+import {RootStackScreenProps} from '@/navigations/root-navigation';
 
 const {width} = Dimensions.get('window');
 const IMG_HEIGHT = 300;
 
-const DetailsPage = () => {
+const DetailsPage = ({
+  route,
+  navigation,
+}: RootStackScreenProps<'DetailsScreen'>) => {
   const {colors} = useTheme();
+  console.log(route.params.id);
 
-  const navigation = useNavigation();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
   useLayoutEffect(() => {

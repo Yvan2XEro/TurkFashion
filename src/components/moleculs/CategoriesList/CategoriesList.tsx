@@ -4,14 +4,17 @@ import {useTheme} from '@react-navigation/native';
 import {SubCategoriesList} from '../SubCategoriesList';
 import {useFiltersStore} from '@/store/useFiltersStore';
 
-export default function CategoriesList() {
+type TProps = {
+  selectedCategory: string | null;
+  setSelectedCategory: (c: string | null) => void;
+  selectedSubCategory: string | null;
+  setSelectedSubCategory: React.Dispatch<React.SetStateAction<string | null>>;
+};
+export default function CategoriesList(props: TProps) {
+  const {selectedCategory, setSelectedCategory, ...rest} = props;
   const {colors} = useTheme();
 
   const {categories, setActiveCategory} = useFiltersStore();
-
-  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
-    null,
-  );
 
   return (
     <>
@@ -58,7 +61,9 @@ export default function CategoriesList() {
           );
         }}
       />
-      {!!selectedCategory && <SubCategoriesList category={selectedCategory} />}
+      {!!selectedCategory && (
+        <SubCategoriesList category={selectedCategory} {...rest} />
+      )}
     </>
   );
 }

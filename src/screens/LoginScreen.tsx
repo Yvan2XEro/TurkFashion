@@ -3,6 +3,7 @@ import React from 'react';
 import {AuthScreenWrapper} from '@/components/moleculs/AuthScreenWrapper';
 import {useTheme} from '@react-navigation/native';
 import {SignInButtons} from '@/components/moleculs/SignInButtons';
+import {BlurView} from '@react-native-community/blur';
 
 export default function LoginScreen() {
   const colorScheme = useColorScheme();
@@ -17,14 +18,23 @@ export default function LoginScreen() {
             position: 'relative',
             overflow: 'hidden',
             padding: 12,
-            backgroundColor:
-              colorScheme === 'dark'
-                ? 'rgba(0, 0, 0, 0.5)'
-                : 'rgba(255, 255, 255, 0.5)',
           }}>
+          <BlurView
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              zIndex: 1,
+            }}
+            blurType={colorScheme === 'dark' ? 'dark' : 'light'}
+            blurAmount={1}
+          />
           <View
             style={{
               position: 'relative',
+              zIndex: 1.2,
               // borderWidth: 1,
               padding: 10,
               // borderColor: colors.text,
@@ -33,7 +43,16 @@ export default function LoginScreen() {
             }}>
             <View>
               <Text
-                style={{fontSize: 32, fontWeight: '600', color: colors.text}}>
+                style={{
+                  fontSize: 32,
+                  fontWeight: '600',
+                  textShadowOffset: {
+                    height: 1,
+                    width: 0,
+                  },
+                  textShadowRadius: 4,
+                  color: colors.text,
+                }}>
                 Turk Fashion
               </Text>
             </View>

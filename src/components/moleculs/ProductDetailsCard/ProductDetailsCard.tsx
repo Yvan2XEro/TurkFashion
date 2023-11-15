@@ -4,32 +4,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
 import {Product} from '@/types/models';
 import {useColorScheme} from 'react-native';
-import {
-  NavigationProp,
-  useNavigation,
-  useTheme,
-} from '@react-navigation/native';
-
-import {RootStackParamList} from '@/navigations/root-navigation';
+import {useTheme} from '@react-navigation/native';
 
 type TProps = {
   data: Product;
   index: number;
+  onPress: () => void;
 };
-export default function ProductDetailsCard({data, index}: TProps) {
+export default function ProductDetailsCard({data, index, onPress}: TProps) {
   const {colors} = useTheme();
   const colorScheme = useColorScheme();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
   return (
     <View>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('DetailsScreen', {
-            id: '456',
-          });
-        }}
-        style={{padding: 6}}>
+      <TouchableOpacity onPress={onPress} style={{padding: 6}}>
         <View
           style={{
             aspectRatio: index === 0 ? 1 : 2 / 3,
@@ -64,10 +51,12 @@ export default function ProductDetailsCard({data, index}: TProps) {
                   aspectRatio: 1,
                   alignItems: 'center',
                   justifyContent: 'center',
+                  position: 'relative',
                   overflow: 'hidden',
                 }}>
                 <BlurView
                   blurType={colorScheme === 'dark' ? 'dark' : 'light'}
+                  style={blurViewStyle}
                   blurAmount={10}>
                   <Ionicons
                     name="heart-outline"
@@ -82,12 +71,10 @@ export default function ProductDetailsCard({data, index}: TProps) {
               style={{
                 borderRadius: 100,
                 overflow: 'hidden',
+                position: 'relative',
               }}>
               <BlurView
-                style={{
-                  borderRadius: 100,
-                  overflow: 'hidden',
-                }}
+                style={blurViewStyle}
                 blurType={colorScheme === 'dark' ? 'dark' : 'light'}
                 blurAmount={6}>
                 <View
@@ -142,3 +129,13 @@ export default function ProductDetailsCard({data, index}: TProps) {
     </View>
   );
 }
+
+const {blurViewStyle} = StyleSheet.create({
+  blurViewStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+});

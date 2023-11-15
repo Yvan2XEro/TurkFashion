@@ -39,16 +39,16 @@ export default function GridCollection({title, rightButton, items}: TProps) {
         <ProductCard
           onPress={() => {
             navigation.navigate('DetailsScreen', {
-              id: items[0].id.toString(),
+              id: items[0].uuid,
             });
           }}
           data={items[0]}
         />
-        <View style={{flex: 1, gap: 12}}>
+        <View style={{flex: 0.8, gap: 12}}>
           <ProductCard
             onPress={() => {
               navigation.navigate('DetailsScreen', {
-                id: items[0].id.toString(),
+                id: items[0].uuid,
               });
             }}
             data={items[0]}
@@ -56,7 +56,7 @@ export default function GridCollection({title, rightButton, items}: TProps) {
           <ProductCard
             onPress={() => {
               navigation.navigate('DetailsScreen', {
-                id: items[0].id.toString(),
+                id: items[0].uuid,
               });
             }}
             data={items[0]}
