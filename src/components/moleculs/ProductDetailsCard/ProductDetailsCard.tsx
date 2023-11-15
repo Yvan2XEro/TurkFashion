@@ -1,22 +1,34 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {BlurView} from '@react-native-community/blur';
 import {Product} from '@/types/models';
 import {useColorScheme} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from '@react-navigation/native';
+
+import {RootStackParamList} from '@/navigations/root-navigation';
+import {AppBlur} from '@/components/atoms/AppBlur';
 
 type TProps = {
   data: Product;
   index: number;
-  onPress: () => void;
 };
-export default function ProductDetailsCard({data, index, onPress}: TProps) {
+export default function ProductDetailsCard({data, index}: TProps) {
   const {colors} = useTheme();
-  const colorScheme = useColorScheme();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   return (
     <View>
-      <TouchableOpacity onPress={onPress} style={{padding: 6}}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('DetailsScreen', {
+            id: data.uuid,
+          });
+        }}
+        style={{padding: 6}}>
         <View
           style={{
             aspectRatio: index === 0 ? 1 : 2 / 3,
@@ -51,19 +63,10 @@ export default function ProductDetailsCard({data, index, onPress}: TProps) {
                   aspectRatio: 1,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  position: 'relative',
                   overflow: 'hidden',
                 }}>
-                <BlurView
-                  blurType={colorScheme === 'dark' ? 'dark' : 'light'}
-                  style={blurViewStyle}
-                  blurAmount={10}>
-                  <Ionicons
-                    name="heart-outline"
-                    size={20}
-                    color={colors.text}
-                  />
-                </BlurView>
+                <AppBlur />
+                <Ionicons name="heart-outline" size={20} color={colors.text} />
               </View>
             </View>
             <View style={{flex: 1}} />
@@ -71,41 +74,37 @@ export default function ProductDetailsCard({data, index, onPress}: TProps) {
               style={{
                 borderRadius: 100,
                 overflow: 'hidden',
-                position: 'relative',
               }}>
-              <BlurView
-                style={blurViewStyle}
-                blurType={colorScheme === 'dark' ? 'dark' : 'light'}
-                blurAmount={6}>
-                <View
+              <AppBlur />
+
+              <View
+                style={{
+                  backgroundColor: 'transparent',
+                  flexDirection: 'row',
+                  padding: 6,
+                  alignItems: 'center',
+                }}>
+                <Text
                   style={{
-                    backgroundColor: 'transparent',
-                    flexDirection: 'row',
-                    padding: 6,
-                    alignItems: 'center',
+                    flex: 1,
+                    fontSize: 16,
+                    fontWeight: '600',
+                    color: colors.text,
+                    marginLeft: 8,
+                  }}
+                  numberOfLines={1}>
+                  ${data.price}
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    borderRadius: 100,
+                    backgroundColor: '#fff',
                   }}>
-                  <Text
-                    style={{
-                      flex: 1,
-                      fontSize: 16,
-                      fontWeight: '600',
-                      color: colors.text,
-                      marginLeft: 8,
-                    }}
-                    numberOfLines={1}>
-                    ${data.price}
-                  </Text>
-                  <TouchableOpacity
-                    style={{
-                      paddingHorizontal: 12,
-                      paddingVertical: 8,
-                      borderRadius: 100,
-                      backgroundColor: '#fff',
-                    }}>
-                    <Ionicons name="cart-outline" size={18} color="#000" />
-                  </TouchableOpacity>
-                </View>
-              </BlurView>
+                  <Ionicons name="cart-outline" size={18} color="#000" />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -129,13 +128,3 @@ export default function ProductDetailsCard({data, index, onPress}: TProps) {
     </View>
   );
 }
-
-const {blurViewStyle} = StyleSheet.create({
-  blurViewStyle: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
-});

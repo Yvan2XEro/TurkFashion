@@ -21,6 +21,9 @@ import {useNavigation} from '@react-navigation/core';
 import {useTheme} from '@react-navigation/native';
 import {paddingTop} from '@/constants/layout';
 import {RootStackScreenProps} from '@/navigations/root-navigation';
+import useFirestoreItemData from '@/hooks/useFirestoreItemData';
+import {Product} from '@/types/models';
+import useSubcategoryData from '@/hooks/useSubcategoryData';
 
 const {width} = Dimensions.get('window');
 const IMG_HEIGHT = 300;
@@ -30,7 +33,11 @@ const DetailsPage = ({
   navigation,
 }: RootStackScreenProps<'DetailsScreen'>) => {
   const {colors} = useTheme();
-  console.log(route.params.id);
+  const {data} = useFirestoreItemData<Product>({
+    collection: 'products',
+    uuid: route.params.id,
+  });
+  const {subCategory} = useSubcategoryData(data?.subCategoryUuid || '');
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
@@ -116,8 +123,10 @@ const DetailsPage = ({
         />
 
         <View style={[styles.infoContainer, {backgroundColor: colors.card}]}>
-          <Text style={[styles.name, {color: colors.text}]}>fghj</Text>
-          <Text style={[styles.location, {color: colors.text}]}>ghj</Text>
+          <Text style={[styles.name, {color: colors.text}]}>{data?.name}</Text>
+          <Text style={[styles.location, {color: colors.text}]}>
+            {subCategory?.name}
+          </Text>
           <Text style={[styles.rooms, {color: colors.text}]}>
             ghjkl ghj ghjkl hjk
           </Text>

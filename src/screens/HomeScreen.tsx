@@ -13,7 +13,6 @@ import {
 import {ProductsList} from '@/components/organims/ProductsList';
 import useCollectionData from '@/hooks/useCollectionData';
 import {Product} from '@/types/models';
-import {ProductDetailsCard} from '@/components/moleculs/ProductDetailsCard';
 import {RootStackParamList} from '@/navigations/root-navigation';
 
 export default function HomeScreen() {
@@ -31,30 +30,32 @@ export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
-    <View style={{paddingHorizontal: SCREEN_PADDING_HORIZONTAL}}>
-      <View style={{paddingVertical: 24, gap: SECTIONS_GAP}}>
-        <HiUser />
-        <AppSearchBar />
-        <CategoriesList
-          selectedCategory={selectedCategory}
-          setSelectedCategory={(category: string | null) => {
-            setSelectedCategory(category);
-            setSelectedSubCategory(null);
-          }}
-          selectedSubCategory={selectedSubCategory}
-          setSelectedSubCategory={setSelectedSubCategory}
-        />
-        {!selectedCategory && (
-          <GridCollection
-            title="New Arrivals"
-            rightButton={
-              <TouchableOpacity>
-                <Text style={{color: colors.text}}>See all</Text>
-              </TouchableOpacity>
-            }
-            items={data?.reverse() || []}
+    <View style={{paddingHorizontal: SCREEN_PADDING_HORIZONTAL, flex: 1}}>
+      <View style={{flex: 1}}>
+        <View style={{paddingVertical: 24, gap: SECTIONS_GAP}}>
+          <HiUser />
+          <AppSearchBar />
+          <CategoriesList
+            selectedCategory={selectedCategory}
+            setSelectedCategory={(category: string | null) => {
+              setSelectedCategory(category);
+              setSelectedSubCategory(null);
+            }}
+            selectedSubCategory={selectedSubCategory}
+            setSelectedSubCategory={setSelectedSubCategory}
           />
-        )}
+          {!selectedCategory && (
+            <GridCollection
+              title="New Arrivals"
+              rightButton={
+                <TouchableOpacity>
+                  <Text style={{color: colors.text}}>See all</Text>
+                </TouchableOpacity>
+              }
+              items={data?.reverse() || []}
+            />
+          )}
+        </View>
         {!!selectedCategory && (
           <ProductsList
             filters={{

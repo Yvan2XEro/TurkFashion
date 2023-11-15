@@ -1,6 +1,7 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Product} from '@/types/models';
+import {AppBlur} from '@/components/atoms/AppBlur';
 
 type TProps = {
   onPress: () => void;
@@ -36,9 +37,10 @@ export default function ProductCard({data, onPress}: TProps) {
           top: 12,
           paddingHorizontal: 12,
           paddingVertical: 8,
-          backgroundColor: 'rgba(0,0,0,0.25)',
+          overflow: 'hidden',
           borderRadius: 100,
         }}>
+        <AppBlur />
         <Text style={{fontSize: 14, fontWeight: '600', color: '#fff'}}>
           ${data.price}
         </Text>
