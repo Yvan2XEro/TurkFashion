@@ -7,6 +7,7 @@ export type Product = {
     description?: string
     categoryUuid: string
     subCategoryUuid: string
+    filters: Record<string, string>
 }
 
 export type Category = {

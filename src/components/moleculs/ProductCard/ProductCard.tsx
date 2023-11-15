@@ -2,12 +2,14 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Product} from '@/types/models';
 import {AppBlur} from '@/components/atoms/AppBlur';
+import {useTheme} from '@react-navigation/native';
 
 type TProps = {
   onPress: () => void;
   data: Product;
 };
 export default function ProductCard({data, onPress}: TProps) {
+  const {colors} = useTheme();
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -41,7 +43,7 @@ export default function ProductCard({data, onPress}: TProps) {
           borderRadius: 100,
         }}>
         <AppBlur />
-        <Text style={{fontSize: 14, fontWeight: '600', color: '#fff'}}>
+        <Text style={{fontSize: 14, fontWeight: '600', color: colors.text}}>
           ${data.price}
         </Text>
       </View>

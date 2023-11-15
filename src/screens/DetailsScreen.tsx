@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -17,13 +17,15 @@ import Animated, {
   useAnimatedStyle,
   useScrollViewOffset,
 } from 'react-native-reanimated';
-import {useNavigation} from '@react-navigation/core';
 import {useTheme} from '@react-navigation/native';
 import {paddingTop} from '@/constants/layout';
 import {RootStackScreenProps} from '@/navigations/root-navigation';
 import useFirestoreItemData from '@/hooks/useFirestoreItemData';
 import {Product} from '@/types/models';
 import useSubcategoryData from '@/hooks/useSubcategoryData';
+import {AppButton} from '@/components/atoms/AppButton';
+import {filtersObjects} from '@/helpers/filters';
+import {useColorScheme} from 'react-native';
 
 const {width} = Dimensions.get('window');
 const IMG_HEIGHT = 300;
@@ -33,11 +35,22 @@ const DetailsPage = ({
   navigation,
 }: RootStackScreenProps<'DetailsScreen'>) => {
   const {colors} = useTheme();
+  const colorSheme = useColorScheme();
   const {data} = useFirestoreItemData<Product>({
     collection: 'products',
     uuid: route.params.id,
   });
-  const {subCategory} = useSubcategoryData(data?.subCategoryUuid || '');
+  const {subCategory, category, filters} = useSubcategoryData({
+    categoryUuid: data?.categoryUuid || null,
+    subCategoryuuid: data?.subCategoryUuid || null,
+  });
+
+  const productFilters = useMemo(() => {
+    if (!data || !filters || !filters.length) {
+      return [];
+    }
+    return filtersObjects(data, filters);
+  }, [data, filters]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
@@ -53,7 +66,10 @@ const DetailsPage = ({
               headerAnimatedStyle,
               styles.header,
               {paddingTop},
-              {backgroundColor: colors.card, borderColor: colors.border},
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.background,
+              },
             ]}></Animated.View>
         </>
       ),
@@ -77,7 +93,7 @@ const DetailsPage = ({
         </TouchableOpacity>
       ),
     });
-  }, []);
+  }, [colorSheme]);
 
   const scrollOffset = useScrollViewOffset(scrollRef);
 
@@ -116,7 +132,7 @@ const DetailsPage = ({
         scrollEventThrottle={16}>
         <Animated.Image
           source={{
-            uri,
+            uri: data?.photoUrl || 'https://source.unsplash.com/random',
           }}
           style={[styles.image, imageAnimatedStyle]}
           resizeMode="cover"
@@ -124,47 +140,64 @@ const DetailsPage = ({
 
         <View style={[styles.infoContainer, {backgroundColor: colors.card}]}>
           <Text style={[styles.name, {color: colors.text}]}>{data?.name}</Text>
-          <Text style={[styles.location, {color: colors.text}]}>
-            {subCategory?.name}
-          </Text>
-          <Text style={[styles.rooms, {color: colors.text}]}>
-            ghjkl ghj ghjkl hjk
-          </Text>
-          <View style={{flexDirection: 'row', gap: 4}}>
-            <Ionicons name="star" size={16} />
-            <Text style={[styles.ratings, {color: colors.text}]}>reviews</Text>
-          </View>
-          <View style={[styles.divider, {borderColor: colors.border}]} />
-
-          <View style={styles.hostView}>
-            <Image source={{uri}} style={styles.host} />
-
-            <View>
-              <Text style={{fontWeight: '500', fontSize: 16}}>
-                Hosted by ghjk
+          {category && subCategory && (
+            <>
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginTop: 8,
+                  fontWeight: '600',
+                  color: colors.text,
+                }}>
+                Category
               </Text>
-              <Text>Host since ghjkl</Text>
-            </View>
+              <Text
+                style={[
+                  {
+                    fontSize: 18,
+                    fontFamily: 'mon-sb',
+                    color: colors.text,
+                  },
+                ]}>
+                {category?.name} / {subCategory?.name}
+              </Text>
+            </>
+          )}
+
+          <View style={{flexDirection: 'row', gap: 4}}>
+            <Ionicons color={colors.text} name="star" size={16} />
+            <Text style={[styles.ratings, {color: colors.text}]}>
+              75 reviews
+            </Text>
           </View>
 
-          <View style={[styles.divider, {borderColor: colors.border}]} />
-
-          <Text style={{color: colors.text}}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores
-            ullam omnis veniam quidem. Totam, exercitationem fugit! Lorem ipsum
-            dolor sit amet, consectetur adipisicing elit. Maiores ullam omnis
-            veniam quidem. Totam, exercitationem fugit! Lorem ipsum dolor sit
-            amet, consectetur adipisicing elit. Maiores ullam omnis veniam
-            quidem. Totam, exercitationem fugit! Lorem ipsum dolor sit amet,
-            consectetur adipisicing elit. Maiores ullam omnis veniam quidem.
-            Totam, exercitationem fugit! Lorem ipsum dolor sit amet, consectetur
-            adipisicing elit. Maiores ullam omnis veniam quidem. Totam,
-            exercitationem fugit! Lorem ipsum dolor sit amet, consectetur
-            adipisicing elit. Maiores ullam omnis veniam quidem. Totam,
-            exercitationem fugit! Lorem ipsum dolor sit amet, consectetur
-            adipisicing elit. Maiores ullam omnis veniam quidem. Totam,
-            exercitationem fugit!
+          <Text
+            style={{
+              fontSize: 16,
+              marginTop: 8,
+              fontWeight: '600',
+              color: colors.text,
+            }}>
+            Details
           </Text>
+          <View>
+            {productFilters?.map(({label, value}) => (
+              <Text key={label} style={[{color: colors.text}]}>
+                {label} : {value}
+              </Text>
+            ))}
+          </View>
+
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '600',
+              marginTop: 8,
+              color: colors.text,
+            }}>
+            Description
+          </Text>
+          <Text style={{color: colors.text}}>{data?.description}</Text>
         </View>
       </Animated.ScrollView>
 
@@ -178,16 +211,21 @@ const DetailsPage = ({
             alignItems: 'center',
           }}>
           <TouchableOpacity style={styles.footerText}>
-            <Text style={[styles.footerPrice, {color: colors.text}]}>€678</Text>
-            <Text>night</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[defaultStyles.btn, {paddingRight: 20, paddingLeft: 20}]}>
-            <Text style={[defaultStyles.btnText, {color: colors.text}]}>
-              Reserve
+            <Text style={[styles.footerPrice, {color: colors.text}]}>
+              ${data?.price}
             </Text>
           </TouchableOpacity>
+
+          <AppButton>
+            <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
+              <Ionicons
+                name="cart-outline"
+                size={24}
+                color={colors.background}
+              />
+              <Text style={{color: colors.background}}>Add to cart</Text>
+            </View>
+          </AppButton>
         </View>
       </Animated.View>
     </View>
@@ -213,36 +251,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'mon-sb',
   },
-  location: {
-    fontSize: 18,
-    marginTop: 10,
-    fontFamily: 'mon-sb',
-  },
-  rooms: {
-    fontSize: 16,
-    color: 'gray',
-    marginVertical: 4,
-    fontFamily: 'mon',
-  },
+
   ratings: {
     fontSize: 16,
     fontFamily: 'mon-sb',
   },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    marginVertical: 16,
-  },
-  host: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    backgroundColor: 'grey',
-  },
-  hostView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
+
   footerText: {
     height: '100%',
     justifyContent: 'center',

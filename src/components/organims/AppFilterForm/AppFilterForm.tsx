@@ -26,7 +26,9 @@ const AppFilterForm = () => {
   const theme = useTheme();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const {filters} = useSubcategoryData(activeSubCategory);
+  const {filters} = useSubcategoryData({
+    subCategoryuuid: activeSubCategory,
+  });
 
   return (
     <View style={{flex: 1}}>
