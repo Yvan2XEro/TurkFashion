@@ -1,6 +1,6 @@
 import useCollectionData from '@/hooks/useCollectionData';
 import {useFiltersStore} from '@/store/useFiltersStore';
-import {Category, Filter, SubCategory} from '@/types/models';
+import {Category, Filter, SubCategory, TagObj} from '@/types/models';
 import React, {PropsWithChildren} from 'react';
 
 export function AppStateInitProvider({children}: PropsWithChildren) {
@@ -16,7 +16,12 @@ export function AppStateInitProvider({children}: PropsWithChildren) {
     collection: 'subcategories',
   });
 
-  const {setFilters, setCategories, setSubCategories} = useFiltersStore();
+  const {data: tags} = useCollectionData<TagObj>({
+    collection: 'tags',
+  });
+
+  const {setFilters, setCategories, setSubCategories, setTags} =
+    useFiltersStore();
 
   React.useEffect(() => {
     if (!!filters) {
@@ -35,5 +40,11 @@ export function AppStateInitProvider({children}: PropsWithChildren) {
       setSubCategories(subCategories);
     }
   }, [subCategories]);
+
+  React.useEffect(() => {
+    if (!!tags) {
+      setTags(tags.map(t => t.label));
+    }
+  }, [tags]);
   return children;
 }

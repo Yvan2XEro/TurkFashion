@@ -1,10 +1,11 @@
-import {View, Text} from 'react-native';
+import {AnimatedHeaderWrapper} from '@/components/organims/AnimatedHeaderWrapper';
 import React from 'react';
+import {Text} from 'react-native';
 
 export default function CartScreen() {
   return (
-    <View>
-      <Text>CartScreen</Text>
-    </View>
+    <AnimatedHeaderWrapper title="Cart">
+      <Text>Cart</Text>
+    </AnimatedHeaderWrapper>
   );
 }

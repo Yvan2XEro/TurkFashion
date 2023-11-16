@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useMemo} from 'react';
+import React, {useCallback, useLayoutEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -26,20 +26,28 @@ import useSubcategoryData from '@/hooks/useSubcategoryData';
 import {AppButton} from '@/components/atoms/AppButton';
 import {filtersObjects} from '@/helpers/filters';
 import {useColorScheme} from 'react-native';
+import {useCartStore} from '@/store/useCartStore';
+import IonIcons from 'react-native-vector-icons/Ionicons';
+import {FloatingCart} from '@/components/moleculs/FloatingCart';
 
 const {width} = Dimensions.get('window');
 const IMG_HEIGHT = 300;
 
-const DetailsPage = ({
-  route,
-  navigation,
-}: RootStackScreenProps<'DetailsScreen'>) => {
+type TProps = RootStackScreenProps<'DetailsScreen'>;
+const DetailsPage = ({route, navigation}: TProps) => {
   const {colors} = useTheme();
   const colorSheme = useColorScheme();
+  const {
+    items,
+    increase,
+    decrease,
+    remove: removeItemFromCart,
+  } = useCartStore();
   const {data} = useFirestoreItemData<Product>({
     collection: 'products',
     uuid: route.params.id,
   });
+  const count = items[data?.uuid + ''];
   const {subCategory, category, filters} = useSubcategoryData({
     categoryUuid: data?.categoryUuid || null,
     subCategoryuuid: data?.subCategoryUuid || null,
@@ -53,6 +61,17 @@ const DetailsPage = ({
   }, [data, filters]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
+
+  const onDecrease = useCallback(() => {
+    if (count <= 1) {
+      return removeItemFromCart(data?.uuid || '');
+    }
+    decrease(data?.uuid || '');
+  }, [items, decrease, data?.uuid, count]);
+
+  const onIncrease = useCallback(() => {
+    increase(data?.uuid || '');
+  }, [items, increase, data?.uuid]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -216,18 +235,75 @@ const DetailsPage = ({
             </Text>
           </TouchableOpacity>
 
-          <AppButton>
-            <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
-              <Ionicons
-                name="cart-outline"
-                size={24}
-                color={colors.background}
-              />
-              <Text style={{color: colors.background}}>Add to cart</Text>
+          {items[data?.uuid + ''] && items[data?.uuid + ''] > 0 && (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 6,
+                backgroundColor: colors.primary,
+                padding: 6,
+                borderRadius: 100,
+              }}>
+              <TouchableOpacity
+                onPress={onDecrease}
+                style={{
+                  backgroundColor: colors.card,
+                  width: 34,
+                  aspectRatio: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 34,
+                }}>
+                <IonIcons name="remove" size={20} color={colors.text} />
+              </TouchableOpacity>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Ionicons
+                  name="cart-outline"
+                  size={24}
+                  color={colors.background}
+                />
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '600',
+                    color: colors.background,
+                  }}>
+                  {count}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={onIncrease}
+                style={{
+                  backgroundColor: colors.card,
+                  width: 34,
+                  aspectRatio: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 34,
+                }}>
+                <IonIcons name="add" size={20} color={colors.text} />
+              </TouchableOpacity>
             </View>
-          </AppButton>
+          )}
+
+          {!!data?.uuid && !items[data?.uuid + ''] && (
+            <AppButton onPress={() => increase(data.uuid)}>
+              <View
+                style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
+                <Ionicons
+                  name="cart-outline"
+                  size={24}
+                  color={colors.background}
+                />
+                <Text style={{color: colors.background}}>Add to cart</Text>
+              </View>
+            </AppButton>
+          )}
         </View>
       </Animated.View>
+
+      <FloatingCart />
     </View>
   );
 };

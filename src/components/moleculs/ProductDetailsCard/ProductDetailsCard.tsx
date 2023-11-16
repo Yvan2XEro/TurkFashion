@@ -11,6 +11,7 @@ import {
 
 import {RootStackParamList} from '@/navigations/root-navigation';
 import {AppBlur} from '@/components/atoms/AppBlur';
+import {useCartStore} from '@/store/useCartStore';
 
 type TProps = {
   data: Product;
@@ -18,7 +19,9 @@ type TProps = {
 };
 export default function ProductDetailsCard({data, index}: TProps) {
   const {colors} = useTheme();
+  const colorScheme = useColorScheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {items, increase} = useCartStore();
 
   return (
     <View>
@@ -65,7 +68,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
                   justifyContent: 'center',
                   overflow: 'hidden',
                 }}>
-                <AppBlur />
+                <AppBlur mode={colorScheme === 'dark' ? 'dark' : 'light'} />
                 <Ionicons name="heart-outline" size={20} color={colors.text} />
               </View>
             </View>
@@ -75,7 +78,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
                 borderRadius: 100,
                 overflow: 'hidden',
               }}>
-              <AppBlur />
+              <AppBlur mode={colorScheme === 'dark' ? 'dark' : 'light'} />
 
               <View
                 style={{
@@ -96,13 +99,44 @@ export default function ProductDetailsCard({data, index}: TProps) {
                   ${data.price}
                 </Text>
                 <TouchableOpacity
+                  onPress={() => {
+                    increase(data.uuid);
+                  }}
                   style={{
                     paddingHorizontal: 12,
                     paddingVertical: 8,
                     borderRadius: 100,
-                    backgroundColor: '#fff',
+                    backgroundColor: colors.primary,
+                    position: 'relative',
                   }}>
-                  <Ionicons name="cart-outline" size={18} color="#000" />
+                  {items[data.uuid] && items[data.uuid] > 0 && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                      }}>
+                      <Text
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          fontSize: 8,
+                          backgroundColor: colors.background,
+                          borderRadius: 100,
+                          paddingHorizontal: 4,
+                          color: colors.primary,
+                        }}>
+                        {items[data.uuid]}
+                      </Text>
+                    </View>
+                  )}
+
+                  <Ionicons
+                    name="cart-outline"
+                    size={18}
+                    color={colors.background}
+                  />
                 </TouchableOpacity>
               </View>
             </View>

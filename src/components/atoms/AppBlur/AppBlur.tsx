@@ -3,7 +3,7 @@ import React from 'react';
 import {BlurView} from '@react-native-community/blur';
 import {View} from 'react-native';
 
-export default function AppBlur() {
+export default function AppBlur({mode = 'light'}: {mode?: 'light' | 'dark'}) {
   const colorScheme = useColorScheme();
 
   //   return (
@@ -20,9 +20,7 @@ export default function AppBlur() {
         blurStyle,
         {
           backgroundColor:
-            colorScheme === 'dark'
-              ? 'rgba(0,0,0,0.5)'
-              : 'rgba(255,255,255,0.5)',
+            mode === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)',
         },
       ]}
     />

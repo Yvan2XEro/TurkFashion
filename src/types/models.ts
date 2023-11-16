@@ -8,6 +8,7 @@ export type Product = {
     categoryUuid: string
     subCategoryUuid: string
     filters: Record<string, string>
+    tags: string[]
 }
 
 export type Category = {
@@ -28,4 +29,8 @@ export type Filter = {
     label: string
     values: string[]
     uuid: string
+}
+
+export type TagObj = {
+    label: string
 }

@@ -1,4 +1,10 @@
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  useColorScheme,
+} from 'react-native';
 import React from 'react';
 import {Product} from '@/types/models';
 import {AppBlur} from '@/components/atoms/AppBlur';
@@ -10,6 +16,7 @@ type TProps = {
 };
 export default function ProductCard({data, onPress}: TProps) {
   const {colors} = useTheme();
+  const colorScheme = useColorScheme();
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -42,7 +49,7 @@ export default function ProductCard({data, onPress}: TProps) {
           overflow: 'hidden',
           borderRadius: 100,
         }}>
-        <AppBlur />
+        <AppBlur mode={colorScheme === 'dark' ? 'dark' : 'light'} />
         <Text style={{fontSize: 14, fontWeight: '600', color: colors.text}}>
           ${data.price}
         </Text>

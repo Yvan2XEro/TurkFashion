@@ -16,6 +16,8 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import CartScreen from '@/screens/CartScreen';
 import PaymentScreen from '@/screens/PaymentScreen';
 import ProfileScreen from '@/screens/ProfileScreen';
+import {View} from 'react-native';
+import {CountInCartBadge} from '@/components/atoms/CountInCartBadge';
 
 export type TabsStackParamList = {
   CartScreen: undefined;
@@ -66,13 +68,16 @@ export default function HomeStack() {
         component={CartScreen}
         options={{
           tabBarIcon: ({color, focused}) => (
-            <CustomBottomTabBarButton
-              active={focused}
-              label="Cart"
-              routeName="CartScreen"
-              ionIconName="cart"
-              ionIconOutlineName="cart-outline"
-            />
+            <View>
+              <CountInCartBadge />
+              <CustomBottomTabBarButton
+                active={focused}
+                label="Cart"
+                routeName="CartScreen"
+                ionIconName="cart"
+                ionIconOutlineName="cart-outline"
+              />
+            </View>
           ),
         }}
       />

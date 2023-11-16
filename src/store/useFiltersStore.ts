@@ -11,6 +11,8 @@ type State = {
     activeSubCategory: string | null
     minPrice: string | undefined
     maxPrice: string | undefined
+    tags: string[]
+    selectedTag: string | null,
 }
 
 type Actions = {
@@ -22,10 +24,24 @@ type Actions = {
     setActiveSubCategory: (c: string | null) => void
     setMinPrice: (p: string | undefined) => void
     setMaxPrice: (p: string | undefined) => void
+    setTags: (t: string[]) => void
+    setSelectedTag: (t: string | null) => void
 }
 
 export const useFiltersStore = create<State & Actions>()(
     immer((set) => ({
+        tags: [],
+        setTags(tags) {
+            set((state) => {
+                state.tags = tags
+            })
+        },
+        selectedTag: null,
+        setSelectedTag(selectedTag) {
+            set((state) => {
+                state.selectedTag = selectedTag
+            })
+        },
         filters: [],
         setFilters(f) {
             set((state) => {
