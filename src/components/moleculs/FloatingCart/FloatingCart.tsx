@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import Animated, {
@@ -8,12 +8,18 @@ import Animated, {
   withDecay,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
-import {useTheme} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from '@react-navigation/native';
 import useCartCount from '@/hooks/useCartCount';
 import {CountInCartBadge} from '@/components/atoms/CountInCartBadge';
+import {TabsStackParamList} from '@/navigations/tab-navigation';
 
 export default function FloatingCart() {
-  const countInCart = useCartCount();
+  const navigation = useNavigation<NavigationProp<TabsStackParamList>>();
+  const {count: countInCart} = useCartCount();
   const translateY = useSharedValue(-300);
 
   const gestureHandler = useAnimatedGestureHandler({
@@ -55,11 +61,15 @@ export default function FloatingCart() {
               justifyContent: 'center',
               alignItems: 'center',
               position: 'relative',
+              borderColor: colors.border,
+              borderWidth: 0.5,
             },
             animatedStyle,
           ]}>
           <CountInCartBadge />
-          <IonIcons name="cart-outline" size={24} color={colors.background} />
+          <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
+            <IonIcons name="cart-outline" size={24} color={colors.background} />
+          </TouchableOpacity>
         </Animated.View>
       </PanGestureHandler>
     </View>

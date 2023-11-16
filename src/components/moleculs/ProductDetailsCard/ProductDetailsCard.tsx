@@ -150,7 +150,10 @@ export default function ProductDetailsCard({data, index}: TProps) {
           fontWeight: '600',
           color: colors.text,
           textAlign: 'center',
-          textShadowColor: 'rgba(0,0,0,0.2)',
+          textShadowColor:
+            colorScheme !== 'dark'
+              ? 'rgba(0,0,0,0.2)'
+              : 'rgba(255,255,255,0.2)',
           textShadowOffset: {
             height: 1,
             width: 0,

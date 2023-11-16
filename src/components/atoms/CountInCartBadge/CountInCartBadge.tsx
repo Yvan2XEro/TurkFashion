@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import useCartCount from '@/hooks/useCartCount';
 
 export default function CountInCartBadge() {
-  const countInCart = useCartCount();
+  const {count: countInCart} = useCartCount();
 
   const {colors} = useTheme();
   if (!countInCart) {

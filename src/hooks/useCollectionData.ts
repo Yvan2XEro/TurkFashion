@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 type UseCollectionProps = {
     collection: string;
     customQuery?: <T extends FirebaseFirestoreTypes.DocumentData>(collectionRef: FirebaseFirestoreTypes.CollectionReference) => FirebaseFirestoreTypes.Query<T>;
+    enabled?: boolean;
 };
 
 const ft = firestore();
@@ -13,6 +14,7 @@ type CollectionResponseData<T = FirebaseFirestoreTypes.DocumentData> = T[] | nul
 export default function useCollectionData<T extends FirebaseFirestoreTypes.DocumentData>({
     collection,
     customQuery,
+    enabled = true,
 }: UseCollectionProps) {
     const [data, setData] = useState<CollectionResponseData<T>>(null);
 
@@ -20,7 +22,17 @@ export default function useCollectionData<T extends FirebaseFirestoreTypes.Docum
     const [error, setError] = useState<any>(null);
 
     useEffect(() => {
+        if (!enabled && data && data.length > 0) {
+            setData(null)
+        }
+    }, [enabled])
+
+    useEffect(() => {
         let query = ft.collection<T>(collection);
+
+        if (!enabled) {
+            return;
+        }
 
         if (customQuery) {
             const subscriber = customQuery<T>(query).onSnapshot(
@@ -53,7 +65,7 @@ export default function useCollectionData<T extends FirebaseFirestoreTypes.Docum
         );
 
         return () => subscriber();
-    }, [collection, customQuery]);
+    }, [collection, customQuery, enabled]);
 
     return { data, isLoading, error };
 }
