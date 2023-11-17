@@ -1,5 +1,7 @@
 import { create } from 'zustand'
-import { immer } from 'zustand/middleware/immer'
+import { immer, } from 'zustand/middleware/immer'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type State = {
     items: Record<string, number>,
@@ -12,7 +14,7 @@ type Actions = {
 }
 
 export const useCartStore = create<State & Actions>()(
-    immer((set) => ({
+    persist(immer((set) => ({
         items: {},
         increase(uuid) {
             set((state) => {
@@ -29,5 +31,8 @@ export const useCartStore = create<State & Actions>()(
                 delete state.items[uuid]
             })
         }
-    }))
+    })), {
+        name: 'cart-storage',
+        storage: createJSONStorage(() => AsyncStorage),
+    })
 )
