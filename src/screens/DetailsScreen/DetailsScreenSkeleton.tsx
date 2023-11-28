@@ -102,8 +102,4 @@ const styles = StyleSheet.create({
     height: 100,
     width: '100%',
   },
-  footerSkeleton: {
-    height: 1000,
-    // paddingHorizontal: 20,
-  },
 });

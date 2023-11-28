@@ -17,12 +17,14 @@ import AuthNavigator from './auth-navigator';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {useAuthStore} from '@/store/useAuthStore';
 import AppProviders from '@/context/AppProviders';
+import SearchScreen from '@/screens/SearchScreen';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;
   DetailsScreen: {
     id: number;
   };
+  SearchScreen: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -65,6 +67,13 @@ function RootNavigationWithoutContainer() {
           }}
         />
         <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+        <Stack.Screen
+          name="SearchScreen"
+          component={SearchScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack.Navigator>
       <StatusBar
         backgroundColor={colorScheme === 'dark' ? '#000000' : '#f5f5f5'}

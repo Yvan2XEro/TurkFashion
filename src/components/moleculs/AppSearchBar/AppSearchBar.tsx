@@ -1,18 +1,25 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {useTheme} from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-import {useAppBottomSheet} from '@/context/app-bottom-sheet';
-import {AppFilterForm} from '@/components/organims/AppFilterForm';
+import {RootStackParamList} from '@/navigations/root-navigation';
+import Animated from 'react-native-reanimated';
+import {AppFilterButton} from '@/components/atoms/AppFilterButton';
 
 export default function AppSearchBar() {
   const {colors} = useTheme();
-  const {presentAppBottomSheet} = useAppBottomSheet();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
-    <View style={{flexDirection: 'row', gap: 12}}>
+    <View
+      // sharedTransitionTag="app_search_bar"
+      style={{flexDirection: 'row', gap: 12}}>
       <TouchableOpacity
+        onPress={() => navigation.navigate('SearchScreen')}
         style={{
           flex: 1,
           height: 52,
@@ -41,24 +48,7 @@ export default function AppSearchBar() {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => {
-          presentAppBottomSheet(<AppFilterForm />);
-        }}
-        style={{
-          width: 52,
-          aspectRatio: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 52,
-          backgroundColor: colors.primary,
-        }}>
-        <MaterialCommunityIcons
-          name="tune-variant"
-          size={24}
-          color={colors.background}
-        />
-      </TouchableOpacity>
+      <AppFilterButton />
     </View>
   );
 }
