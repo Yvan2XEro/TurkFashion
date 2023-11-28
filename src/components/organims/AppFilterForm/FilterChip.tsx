@@ -1,5 +1,7 @@
-import useCollectionData from '@/hooks/useCollectionData';
+import {universalFetch} from '@/lib/api/universalfetch';
+import {useFiltersStore} from '@/store/useFiltersStore';
 import {useTheme} from '@react-navigation/native';
+import {useQuery} from '@tanstack/react-query';
 import {ReactNode} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 
@@ -14,12 +16,33 @@ type TProps = {
 const FilterChip = (props: TProps) => {
   const {isSelected, label, left, filterKey, filterValue, onPress} = props;
   const theme = useTheme();
-
-  const {data} = useCollectionData({
-    collection: 'products',
-    customQuery: collectionRef =>
-      collectionRef.where(filterKey, '==', filterValue) as any,
+  const {activeCategory, activeSubCategory: subCategory} = useFiltersStore();
+  const {
+    data: products,
+    refetch,
+    isPending,
+  } = useQuery({
+    queryKey: [
+      'products',
+      'sub-category',
+      subCategory?.id,
+      'filters',
+      filterKey,
+      filterValue,
+    ],
+    queryFn: () =>
+      universalFetch({
+        limit: 1,
+        page: 1,
+        path: `/products/search?`,
+        q: `${!!subCategory?.id ? '&sub_category_id=' + subCategory?.id : ''}${
+          !!filterKey &&
+          !!filterValue &&
+          '&filters=' + filterKey + '=' + filterValue
+        }`,
+      }),
   });
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -39,7 +62,7 @@ const FilterChip = (props: TProps) => {
           fontSize: 14,
           color: isSelected ? theme.colors.background : theme.colors.text,
         }}>
-        {label} {!!data && <>[{data.length}]</>}
+        {label} {!!products?.meta && `(${products?.meta.count})`}
       </Text>
     </TouchableOpacity>
   );

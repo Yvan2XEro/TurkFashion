@@ -11,30 +11,23 @@ type TProps = {
 export default function ActiveCategoy({onPress}: TProps) {
   const {colors} = useTheme();
   const {t} = useTranslation();
-  const {
-    activeCategory,
-    activeSubCategory,
-    categories,
-    subCategories,
-    setActiveCategory,
-  } = useFiltersStore();
+  const {activeCategory, activeSubCategory, setActiveCategory} =
+    useFiltersStore();
 
   function CathegoryPick() {
-    const category = categories?.find(c => c.uuid === activeCategory);
     return (
       <View>
         <Text style={{textDecorationLine: 'underline', color: colors.text}}>
-          {category?.name || t('All')}
+          {activeCategory?.name || t('All')}
         </Text>
       </View>
     );
   }
   function SubCathegoryPick() {
-    const subcategory = subCategories?.find(c => c.uuid === activeSubCategory);
     return (
       <View>
         <Text style={{textDecorationLine: 'underline', color: colors.text}}>
-          {subcategory?.name || t('All')}
+          {activeSubCategory?.name || t('All')}
         </Text>
       </View>
     );

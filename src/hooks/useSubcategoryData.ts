@@ -3,26 +3,26 @@ import { useMemo } from "react";
 
 
 export default function useSubcategoryData({
-    subCategoryuuid,
-    categoryUuid
+    subCategoryid,
+    categoryid
 }: {
-    subCategoryuuid?: string | null
-    categoryUuid?: string | null
+    subCategoryid?: string | null
+    categoryid?: string | null
 }) {
 
     const { filters, subCategories, categories } = useFiltersStore();
     const subCategory = useMemo(() => {
-        return subCategories?.find(c => c.uuid === subCategoryuuid);
-    }, [subCategoryuuid, subCategories]);
+        return subCategories?.find(c => c.id === subCategoryid);
+    }, [subCategoryid, subCategories]);
 
     const category = useMemo(() => {
-        return categories?.find(c => c.uuid === categoryUuid);
-    }, [categoryUuid, categories]);
+        return categories?.find(c => c.id === categoryid);
+    }, [categoryid, categories]);
 
 
     return ({
         subCategory,
-        filters: filters?.filter(f => subCategory?.filters?.includes(f.uuid)) || [],
+        filters: filters?.filter(f => subCategory?.filters?.includes(f.id)) || [],
         category
     }
     )

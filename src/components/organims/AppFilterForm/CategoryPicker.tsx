@@ -6,27 +6,111 @@ import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {useFiltersStore} from '@/store/useFiltersStore';
 import {Image} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {useQuery} from '@tanstack/react-query';
+import {universalFetch} from '@/lib/api/universalfetch';
+import {SubCategory} from '@/lib/api/sub-categories';
+import {Category} from '@/lib/api/categories';
+import {CategoryItem, CategoryItemSkeleton} from './CategoryItem';
 
 type TProps = {
   onClose: () => void;
 };
 export default function CategoryPicker({onClose}: TProps) {
   const theme = useTheme();
+  const {isPending, data: subCategories} = useQuery({
+    queryKey: ['sub-categories'],
+    queryFn: () =>
+      universalFetch<SubCategory>({
+        limit: 100,
+        page: 1,
+        path: '/sub-categories',
+      }),
+  });
+  const {isPending: categoriesPending, data: categories} = useQuery({
+    queryKey: ['categories'],
+    queryFn: () =>
+      universalFetch<Category>({
+        limit: 100,
+        page: 1,
+        path: '/categories',
+      }),
+  });
   const {
-    categories,
     setActiveCategory,
     activeCategory,
     activeSubCategory,
-    subCategories,
     setActiveSubCategory,
   } = useFiltersStore();
   const category = useMemo(() => {
-    return categories?.find(c => c.uuid === activeCategory);
+    return categories?.data?.find(c => c.id === activeCategory?.id);
   }, [categories, activeCategory]);
 
   const subCategory = useMemo(() => {
-    return subCategories?.find(c => c.uuid === activeSubCategory);
-  }, [subCategories, activeSubCategory]);
+    if (!subCategories?.data) return null;
+    return subCategories.data.find(c => c.id === activeSubCategory?.id);
+  }, [subCategories?.data, activeSubCategory]);
+
+  function RenderContent() {
+    if (isPending) {
+      return (
+        <>
+          {Array.from({length: 10}).map((_, i) => (
+            <CategoryItemSkeleton key={i} />
+          ))}
+        </>
+      );
+    }
+    return (
+      <>
+        {!category ? (
+          <>
+            {categories?.data.map((c, i) => {
+              const isACtive = c.id === activeCategory?.id;
+              return (
+                <CategoryItem
+                  key={i}
+                  name={c.name}
+                  photoUrl={c.photoUrl}
+                  isACtive={isACtive}
+                  onPress={() => {
+                    if (isACtive) {
+                      setActiveCategory(null);
+                    } else {
+                      setActiveCategory(c);
+                    }
+                  }}
+                />
+              );
+            })}
+          </>
+        ) : (
+          <>
+            {subCategories?.data
+              .filter(c => c.category.id === category.id)
+              .map((c, i) => {
+                const isACtive = c.id === activeSubCategory?.id;
+                return (
+                  <CategoryItem
+                    key={i}
+                    name={c.name}
+                    photoUrl={c.photoUrl}
+                    isACtive={isACtive}
+                    onPress={() => {
+                      if (isACtive) {
+                        setActiveSubCategory(null);
+                      } else {
+                        setActiveSubCategory(c);
+                      }
+                      onClose();
+                    }}
+                  />
+                );
+              })}
+          </>
+        )}
+      </>
+    );
+  }
 
   return (
     <View style={{flex: 1}}>
@@ -102,92 +186,9 @@ export default function CategoryPicker({onClose}: TProps) {
       </View>
       <BottomSheetScrollView style={{flex: 1}}>
         <View style={{paddingHorizontal: 24, gap: 24}}>
-          {!category ? (
-            <>
-              {categories.map((c, i) => {
-                const isACtive = c.uuid === activeCategory;
-                return (
-                  <CategoryItem
-                    key={i}
-                    name={c.name}
-                    photoUrl={c.photoUrl}
-                    isACtive={isACtive}
-                    onPress={() => {
-                      if (isACtive) {
-                        setActiveCategory(null);
-                      } else {
-                        setActiveCategory(c.uuid);
-                      }
-                    }}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            <>
-              {subCategories
-                .filter(c => c.categoryUuid === category.uuid)
-                .map((c, i) => {
-                  const isACtive = c.uuid === activeSubCategory;
-                  return (
-                    <CategoryItem
-                      key={i}
-                      name={c.name}
-                      photoUrl={c.photoUrl}
-                      isACtive={isACtive}
-                      onPress={() => {
-                        if (isACtive) {
-                          setActiveSubCategory(null);
-                        } else {
-                          setActiveSubCategory(c.uuid);
-                        }
-                        onClose();
-                      }}
-                    />
-                  );
-                })}
-            </>
-          )}
+          <RenderContent />
         </View>
       </BottomSheetScrollView>
     </View>
-  );
-}
-
-type CategoryItemProps = {
-  onPress: () => void;
-  name: string;
-  photoUrl?: string;
-  isACtive: boolean;
-};
-function CategoryItem({onPress, name, photoUrl, isACtive}: CategoryItemProps) {
-  const theme = useTheme();
-
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        flexDirection: 'row',
-        gap: 8,
-        alignItems: 'center',
-        borderRadius: 8,
-        padding: 8,
-        borderWidth: 1,
-        borderColor: isACtive ? theme.colors.border : 'transparent',
-      }}>
-      {!!photoUrl && (
-        <Image
-          source={{uri: photoUrl}}
-          style={{width: 40, height: 40, borderRadius: 40}}
-        />
-      )}
-      <Text
-        style={{
-          color: theme.colors.text,
-          fontSize: 16,
-        }}>
-        {name}
-      </Text>
-    </TouchableOpacity>
   );
 }

@@ -1,8 +1,6 @@
 import {AnimatedHeaderWrapper} from '@/components/organims/AnimatedHeaderWrapper';
-import useCollectionData from '@/hooks/useCollectionData';
 import React, {useCallback} from 'react';
 import {FlatList, Image, Text, View} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
 import useCartCount from '@/hooks/useCartCount';
 import {useCartStore} from '@/store/useCartStore';
 import {FlashList} from '@shopify/flash-list';
@@ -15,25 +13,14 @@ import {CartFooter} from '@/components/moleculs/CartFooter';
 export default function CartScreen() {
   const {count} = useCartCount();
   const {items} = useCartStore();
-  const {data} = useCollectionData<Product>({
-    collection: 'products',
-    enabled: !!count && count > 0,
-    customQuery: ref => {
-      return ref.where(
-        firestore.FieldPath.documentId(),
-        'in',
-        Object.keys(items),
-      ) as any;
-    },
-  });
 
   return (
     <>
       <AnimatedHeaderWrapper title="Cart">
         <View style={{marginTop: 20, flex: 1}}>
           <FlatList
-            data={data || []}
-            keyExtractor={item => item.uuid}
+            data={[]}
+            keyExtractor={item => item.id}
             renderItem={({item, index}: {item: Product; index: number}) => (
               <CartItem item={item} />
             )}
@@ -54,20 +41,20 @@ function CartItem({item}: {item: Product}) {
     decrease,
   } = useCartStore();
 
-  const count = items[item.uuid + ''];
+  const count = items[item.id + ''];
 
   const {colors} = useTheme();
 
   const onDecrease = useCallback(() => {
     if (count <= 1) {
-      return removeItemFromCart(item.uuid || '');
+      return removeItemFromCart(item.id || '');
     }
-    decrease(item.uuid || '');
-  }, [items, decrease, item.uuid, count]);
+    decrease(item.id || '');
+  }, [items, decrease, item.id, count]);
 
   const onIncrease = useCallback(() => {
-    increase(item.uuid || '');
-  }, [items, increase, item.uuid]);
+    increase(item.id || '');
+  }, [items, increase, item.id]);
 
   return (
     <TouchableOpacity

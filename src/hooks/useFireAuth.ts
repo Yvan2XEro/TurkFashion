@@ -13,7 +13,7 @@ export default function useFireAuth() {
     async function persistUser(authResult: FirebaseAuthTypes.UserCredential) {
         try {
             return await usersCollection.doc(authResult.user.uid).set({
-                uuid: authResult.user.uid,
+                id: authResult.user.uid,
                 displayName: authResult.user.displayName,
                 email: authResult.user.email,
                 photoURL: authResult.user.photoURL

@@ -1,7 +1,5 @@
 import { useCartStore } from "@/store/useCartStore"
 import { useMemo } from "react"
-import firestore from '@react-native-firebase/firestore';
-import useCollectionData from "./useCollectionData"
 import { Product } from "@/types/models"
 
 
@@ -13,21 +11,10 @@ export default function useCartCount() {
             return acc + value
         }, 0)
     }, [items])
-    const { data } = useCollectionData<Product>({
-        collection: 'products',
-        enabled: !!count && count > 0,
-        customQuery: ref => {
-            return ref.where(
-                firestore.FieldPath.documentId(),
-                'in',
-                Object.keys(items),
-            ) as any;
-        },
-    });
+    const data: Product[] = []
     const totalPrice = useMemo(() => {
         return Object.entries(items).reduce((acc, [key, value]) => {
-            const count = useCartStore.getState().items[key]
-            const product = data?.find(p => p.uuid === key)
+            const product = data?.find(p => p.id === key)
             if (!!product) {
                 acc += product.price * value
             }

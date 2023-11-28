@@ -1,34 +1,40 @@
+export type DefaultObject = {
+    id: number
+    createdAt: string
+    updatedAt: string
+}
+
 
 export type Product = {
-    uuid: string,
+    id: number,
     name: string,
     price: number,
     photoUrl: string
     description?: string
-    categoryUuid: string
-    subCategoryUuid: string
+    categoryid: number
+    subCategoryid: number
     filters: Record<string, string>
     tags: string[]
 }
 
 export type Category = {
-    uuid: string,
+    id: number,
     name: string
     photoUrl: string
 }
 
 export type SubCategory = {
-    uuid: string,
+    id: number,
     name: string
     photoUrl: string
-    categoryUuid: string
+    categoryid: number
     filters: string[]
 }
 
 export type Filter = {
     label: string
     values: string[]
-    uuid: string
+    id: number
 }
 
 export type TagObj = {

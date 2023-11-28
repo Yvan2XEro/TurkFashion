@@ -1,14 +1,14 @@
-import { Category, Filter, SubCategory } from '@/types/models'
+import { Category } from '@/lib/api/categories'
+import { Filter } from '@/lib/api/filters'
+import { SubCategory } from '@/lib/api/sub-categories'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
 type State = {
     filters: Filter[]
     activeFilters: Record<string, string>
-    categories: Category[]
-    subCategories: SubCategory[]
-    activeCategory: string | null
-    activeSubCategory: string | null
+    activeCategory: Category | null
+    activeSubCategory: SubCategory | null
     minPrice: string | undefined
     maxPrice: string | undefined
     tags: string[]
@@ -18,14 +18,13 @@ type State = {
 type Actions = {
     setFilters: (f: Filter[]) => void
     setActiveFilters: (f: { key: string, value: string }) => void
-    setCategories: (c: Category[]) => void
-    setSubCategories: (c: SubCategory[]) => void
-    setActiveCategory: (c: string | null) => void
-    setActiveSubCategory: (c: string | null) => void
+    setActiveCategory: (c: Category | null) => void
+    setActiveSubCategory: (c: SubCategory | null) => void
     setMinPrice: (p: string | undefined) => void
     setMaxPrice: (p: string | undefined) => void
     setTags: (t: string[]) => void
     setSelectedTag: (t: string | null) => void
+    resetAllFilters: () => void
 }
 
 export const useFiltersStore = create<State & Actions>()(
@@ -60,20 +59,6 @@ export const useFiltersStore = create<State & Actions>()(
             })
         },
 
-        categories: [],
-        setCategories(c) {
-            set((state) => {
-                state.categories = c
-            })
-        },
-
-        subCategories: [],
-        setSubCategories(c) {
-            set((state) => {
-                state.subCategories = c
-            })
-        },
-
         activeCategory: null,
         setActiveCategory(c) {
             set((state) => {
@@ -101,6 +86,15 @@ export const useFiltersStore = create<State & Actions>()(
         setMaxPrice(p) {
             set((state) => {
                 state.maxPrice = p
+            })
+        },
+        resetAllFilters() {
+            set((state) => {
+                state.activeCategory = null
+                state.activeSubCategory = null
+                state.activeFilters = {}
+                state.minPrice = undefined
+                state.maxPrice = undefined
             })
         }
     }))

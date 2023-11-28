@@ -1,68 +1,92 @@
-import {View, Text, FlatList, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {useFiltersStore} from '@/store/useFiltersStore';
+import {useQuery} from '@tanstack/react-query';
+import {universalFetch} from '@/lib/api/universalfetch';
+import {FlashList} from '@shopify/flash-list';
+import {SubCategory} from '@/lib/api/sub-categories';
+import {substr} from '@/lib/utils/string';
+import SubCategoriesListSkeleton from './SubCategoriesListSkeleton';
 
 type TProps = {
-  category: string;
-  selectedSubCategory: string | null;
-  setSelectedSubCategory: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedSubCategory: number | null;
+  setSelectedSubCategory: React.Dispatch<React.SetStateAction<number | null>>;
 };
 export default function SubCategoriesList(props: TProps) {
-  const {category, selectedSubCategory, setSelectedSubCategory} = props;
+  const {selectedSubCategory, setSelectedSubCategory} = props;
   const {colors} = useTheme();
-  const {subCategories, setActiveSubCategory} = useFiltersStore();
+  const [page, setPage] = React.useState(1);
+  const {isPending, data: subCategories} = useQuery({
+    queryKey: ['sub-categories'],
+    queryFn: () =>
+      universalFetch<SubCategory>({
+        limit: 100,
+        page,
+        path: '/sub-categories',
+      }),
+  });
 
   return (
-    <FlatList
-      data={subCategories?.filter(s => s.categoryUuid === category)}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingHorizontal: 16,
-        gap: 12,
-      }}
-      renderItem={({item, index}) => {
-        const isSelected = selectedSubCategory === item.uuid;
-        return (
-          <View style={{alignItems: 'center', gap: 3}}>
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedSubCategory(item.uuid);
-                setActiveSubCategory(item.uuid);
-              }}
-              style={{
-                backgroundColor: isSelected ? colors.primary : colors.card,
-                borderRadius: 100,
-              }}>
-              <Image
-                source={{uri: item.photoUrl}}
-                style={{
-                  width: 50,
-                  aspectRatio: 1,
-                  borderRadius: 50,
-                  margin: isSelected ? 2 : 0,
+    <View>
+      {isPending ? (
+        <SubCategoriesListSkeleton />
+      ) : (
+        <FlashList
+          data={[
+            {
+              id: null,
+              name: 'All',
+            },
+            ...(subCategories?.data.map(item => ({
+              id: item.id,
+              name: item.name,
+            })) || []),
+          ]}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            // paddingBottom: 20,
+            paddingHorizontal: 16,
+          }}
+          renderItem={({item, index}) => {
+            const isSelected = selectedSubCategory === item.id;
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedSubCategory(item.id);
                 }}
-              />
-            </TouchableOpacity>
-            <View
-              style={{
-                backgroundColor: isSelected ? colors.primary : colors.card,
-                borderRadius: 4,
-                paddingHorizontal: 5,
-                paddingVertical: 1,
-              }}>
-              <Text
                 style={{
-                  alignItems: 'center',
-                  color: isSelected ? colors.background : colors.text,
+                  backgroundColor: isSelected ? colors.primary : colors.card,
+                  paddingHorizontal: 20,
+                  marginHorizontal: 3,
+                  paddingVertical: 8,
+                  borderRadius: 100,
+                  borderWidth: isSelected ? 0 : 1,
+                  borderColor: colors.border,
                 }}>
-                {item.name}
-              </Text>
-            </View>
-          </View>
-        );
-      }}
-    />
+                <Text
+                  style={{
+                    color: isSelected ? colors.background : colors.text,
+                    fontWeight: '600',
+                    fontSize: 14,
+                    opacity: isSelected ? 1 : 0.5,
+                  }}>
+                  {substr(item.name, 15)}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+          estimatedItemSize={100}
+        />
+      )}
+    </View>
   );
 }

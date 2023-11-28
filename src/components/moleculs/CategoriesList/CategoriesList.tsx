@@ -1,7 +1,6 @@
 import {Text, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
-import {SubCategoriesList} from '../SubCategoriesList';
 import {useFiltersStore} from '@/store/useFiltersStore';
 
 type TProps = {
@@ -22,7 +21,7 @@ export default function CategoriesList(props: TProps) {
         data={[
           {
             name: 'All',
-            uuid: null,
+            id: null,
           },
           ...(categories || []),
         ]}
@@ -33,12 +32,12 @@ export default function CategoriesList(props: TProps) {
           gap: 12,
         }}
         renderItem={({item, index}) => {
-          const isSelected = selectedCategory === item.uuid;
+          const isSelected = selectedCategory === item.id;
           return (
             <TouchableOpacity
               onPress={() => {
-                setActiveCategory(item.uuid);
-                setSelectedCategory(item.uuid);
+                setActiveCategory(item);
+                setSelectedCategory(item.id);
               }}
               style={{
                 backgroundColor: isSelected ? colors.primary : colors.card,
@@ -61,9 +60,6 @@ export default function CategoriesList(props: TProps) {
           );
         }}
       />
-      {!!selectedCategory && (
-        <SubCategoriesList category={selectedCategory} {...rest} />
-      )}
     </>
   );
 }

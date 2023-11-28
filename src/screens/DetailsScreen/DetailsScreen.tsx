@@ -3,11 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Dimensions,
   TouchableOpacity,
-  Share,
-  StatusBar,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Animated, {
@@ -20,58 +17,41 @@ import Animated, {
 import {useTheme} from '@react-navigation/native';
 import {paddingTop} from '@/constants/layout';
 import {RootStackScreenProps} from '@/navigations/root-navigation';
-import useFirestoreItemData from '@/hooks/useFirestoreItemData';
-import {Product} from '@/types/models';
-import useSubcategoryData from '@/hooks/useSubcategoryData';
 import {AppButton} from '@/components/atoms/AppButton';
-import {filtersObjects} from '@/helpers/filters';
 import {useColorScheme} from 'react-native';
-import {useCartStore} from '@/store/useCartStore';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {FloatingCart} from '@/components/moleculs/FloatingCart';
+import {useQuery} from '@tanstack/react-query';
+import {universalRetrieve} from '@/lib/api/universalfetch';
+import {Product} from '@/lib/api/products';
+import {
+  DetailsSkeleton,
+  FooterSkeleton,
+  ImageSkeleton,
+} from './DetailsScreenSkeleton';
 
 const {width} = Dimensions.get('window');
 const IMG_HEIGHT = 300;
 
 type TProps = RootStackScreenProps<'DetailsScreen'>;
 const DetailsPage = ({route, navigation}: TProps) => {
+  const id = route.params.id;
+  const {data: product, isLoading} = useQuery({
+    queryKey: ['product', id],
+    queryFn: async () => {
+      return await universalRetrieve<Product>({
+        path: `/products/${id}`,
+      });
+    },
+  });
   const {colors} = useTheme();
   const colorSheme = useColorScheme();
-  const {
-    items,
-    increase,
-    decrease,
-    remove: removeItemFromCart,
-  } = useCartStore();
-  const {data} = useFirestoreItemData<Product>({
-    collection: 'products',
-    uuid: route.params.id,
-  });
-  const count = items[data?.uuid + ''];
-  const {subCategory, category, filters} = useSubcategoryData({
-    categoryUuid: data?.categoryUuid || null,
-    subCategoryuuid: data?.subCategoryUuid || null,
-  });
-
-  const productFilters = useMemo(() => {
-    if (!data || !filters || !filters.length) {
-      return [];
-    }
-    return filtersObjects(data, filters);
-  }, [data, filters]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
-  const onDecrease = useCallback(() => {
-    if (count <= 1) {
-      return removeItemFromCart(data?.uuid || '');
-    }
-    decrease(data?.uuid || '');
-  }, [items, decrease, data?.uuid, count]);
+  const onDecrease = useCallback(() => {}, []);
 
-  const onIncrease = useCallback(() => {
-    increase(data?.uuid || '');
-  }, [items, increase, data?.uuid]);
+  const onIncrease = useCallback(() => {}, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -83,9 +63,10 @@ const DetailsPage = ({route, navigation}: TProps) => {
           <Animated.View
             style={[
               headerAnimatedStyle,
-              styles.header,
               {paddingTop},
               {
+                height: 100,
+                borderBottomWidth: StyleSheet.hairlineWidth,
                 backgroundColor: colors.card,
                 borderColor: colors.background,
               },
@@ -93,7 +74,13 @@ const DetailsPage = ({route, navigation}: TProps) => {
         </>
       ),
       headerRight: () => (
-        <View style={styles.bar}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+          }}>
           <TouchableOpacity
             style={[styles.roundButton, {backgroundColor: colors.card}]}>
             <Ionicons name="share-outline" size={22} color={colors.text} />
@@ -144,22 +131,37 @@ const DetailsPage = ({route, navigation}: TProps) => {
   }, []);
 
   return (
-    <View style={[styles.container]}>
+    <View style={[{flex: 1}]}>
       <Animated.ScrollView
         contentContainerStyle={{paddingBottom: 100}}
         ref={scrollRef}
         scrollEventThrottle={16}>
-        <Animated.Image
-          source={{
-            uri: data?.photoUrl || 'https://source.unsplash.com/random',
-          }}
-          style={[styles.image, imageAnimatedStyle]}
-          resizeMode="cover"
-        />
+        {isLoading && <ImageSkeleton />}
+        {!isLoading && (
+          <Animated.Image
+            source={{
+              uri: product?.photoUrl,
+            }}
+            style={[{height: IMG_HEIGHT, width: width}, imageAnimatedStyle]}
+            resizeMode="cover"
+          />
+        )}
 
-        <View style={[styles.infoContainer, {backgroundColor: colors.card}]}>
-          <Text style={[styles.name, {color: colors.text}]}>{data?.name}</Text>
-          {category && subCategory && (
+        {isLoading && <DetailsSkeleton />}
+
+        {!isLoading && (
+          <View style={[{padding: 24, backgroundColor: colors.card}]}>
+            <Text
+              style={[
+                {
+                  fontSize: 26,
+                  fontWeight: 'bold',
+                  fontFamily: 'mon-sb',
+                  color: colors.text,
+                },
+              ]}>
+              {product?.name}
+            </Text>
             <>
               <Text
                 style={{
@@ -178,64 +180,99 @@ const DetailsPage = ({route, navigation}: TProps) => {
                     color: colors.text,
                   },
                 ]}>
-                {category?.name} / {subCategory?.name}
+                {product?.subCategory.category.name} /{' '}
+                {product?.subCategory.name}
               </Text>
             </>
-          )}
 
-          <View style={{flexDirection: 'row', gap: 4}}>
-            <Ionicons color={colors.text} name="star" size={16} />
-            <Text style={[styles.ratings, {color: colors.text}]}>
-              75 reviews
-            </Text>
-          </View>
-
-          <Text
-            style={{
-              fontSize: 16,
-              marginTop: 8,
-              fontWeight: '600',
-              color: colors.text,
-            }}>
-            Details
-          </Text>
-          <View>
-            {productFilters?.map(({label, value}) => (
-              <Text key={label} style={[{color: colors.text}]}>
-                {label} : {value}
+            <View style={{flexDirection: 'row', gap: 4}}>
+              <Ionicons color={colors.text} name="star" size={16} />
+              <Text
+                style={[
+                  {
+                    fontSize: 16,
+                    fontFamily: 'mon-sb',
+                  },
+                  {color: colors.text},
+                ]}>
+                75 reviews
               </Text>
-            ))}
-          </View>
+            </View>
 
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: '600',
-              marginTop: 8,
-              color: colors.text,
-            }}>
-            Description
-          </Text>
-          <Text style={{color: colors.text}}>{data?.description}</Text>
-        </View>
+            <Text
+              style={{
+                fontSize: 16,
+                marginTop: 8,
+                fontWeight: '600',
+                color: colors.text,
+              }}>
+              Details
+            </Text>
+            <View>
+              {product?.filtersValues.map(({name, value}, i) => (
+                <Text
+                  key={i}
+                  style={[{color: colors.text, alignItems: 'center'}]}>
+                  <IonIcons name="information-circle-outline" size={16} />{' '}
+                  <Text style={{fontWeight: '600'}}>{name}</Text> : {value}
+                </Text>
+              ))}
+            </View>
+
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: '600',
+                marginTop: 8,
+                color: colors.text,
+              }}>
+              Description
+            </Text>
+            <Text style={{color: colors.text}}>{product?.description}</Text>
+          </View>
+        )}
       </Animated.ScrollView>
 
       <Animated.View
-        style={[defaultStyles.footer, {backgroundColor: colors.card}]}
+        style={[
+          {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderTopColor: 'grey',
+            borderTopWidth: StyleSheet.hairlineWidth,
+          },
+          {backgroundColor: colors.card},
+        ]}
         entering={SlideInDown.delay(200)}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity style={styles.footerText}>
-            <Text style={[styles.footerPrice, {color: colors.text}]}>
-              ${data?.price}
-            </Text>
-          </TouchableOpacity>
+        {isLoading && <FooterSkeleton />}
+        {!isLoading && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              style={{
+                height: '100%',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+              }}>
+              <Text
+                style={[
+                  {fontSize: 18, fontFamily: 'mon-sb'},
+                  {color: colors.text},
+                ]}>
+                $10$
+              </Text>
+            </TouchableOpacity>
 
-          {items[data?.uuid + ''] && items[data?.uuid + ''] > 0 && (
             <View
               style={{
                 flexDirection: 'row',
@@ -269,7 +306,7 @@ const DetailsPage = ({route, navigation}: TProps) => {
                     fontWeight: '600',
                     color: colors.background,
                   }}>
-                  {count}
+                  10
                 </Text>
               </View>
               <TouchableOpacity
@@ -285,10 +322,8 @@ const DetailsPage = ({route, navigation}: TProps) => {
                 <IonIcons name="add" size={20} color={colors.text} />
               </TouchableOpacity>
             </View>
-          )}
 
-          {!!data?.uuid && !items[data?.uuid + ''] && (
-            <AppButton onPress={() => increase(data.uuid)}>
+            <AppButton onPress={() => {}}>
               <View
                 style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
                 <Ionicons
@@ -299,8 +334,8 @@ const DetailsPage = ({route, navigation}: TProps) => {
                 <Text style={{color: colors.background}}>Add to cart</Text>
               </View>
             </AppButton>
-          )}
-        </View>
+          </View>
+        )}
       </Animated.View>
 
       <FloatingCart />
@@ -308,42 +343,7 @@ const DetailsPage = ({route, navigation}: TProps) => {
   );
 };
 
-const uri =
-  'https://images.unsplash.com/photo-1627225924765-552d49cf47ad?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80';
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  image: {
-    height: IMG_HEIGHT,
-    width: width,
-  },
-  infoContainer: {
-    padding: 24,
-  },
-  name: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    fontFamily: 'mon-sb',
-  },
-
-  ratings: {
-    fontSize: 16,
-    fontFamily: 'mon-sb',
-  },
-
-  footerText: {
-    height: '100%',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  footerPrice: {
-    fontSize: 18,
-    fontFamily: 'mon-sb',
-  },
   roundButton: {
     width: 40,
     height: 40,
@@ -351,62 +351,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-  },
-  header: {
-    height: 100,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-
-  description: {
-    fontSize: 16,
-    marginTop: 10,
-    fontFamily: 'mon',
-  },
 });
 
 export default DetailsPage;
-
-const defaultStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FDFFFF',
-  },
-  inputField: {
-    height: 44,
-    borderWidth: 1,
-    borderColor: '#ABABAB',
-    borderRadius: 8,
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  btn: {
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  btnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'mon-b',
-  },
-  btnIcon: {
-    position: 'absolute',
-    left: 16,
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderTopColor: 'grey',
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-});

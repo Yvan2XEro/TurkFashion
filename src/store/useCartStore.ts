@@ -4,31 +4,31 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type State = {
-    items: Record<string, number>,
+    items: Record<number, number>,
 }
 
 type Actions = {
-    increase: (uuid: string) => void
-    decrease: (uuid: string) => void
-    remove: (uuid: string) => void
+    increase: (id: number) => void
+    decrease: (id: number) => void
+    remove: (id: number) => void
 }
 
 export const useCartStore = create<State & Actions>()(
     persist(immer((set) => ({
         items: {},
-        increase(uuid) {
+        increase(id) {
             set((state) => {
-                state.items[uuid] = (state.items[uuid] || 0) + 1
+                state.items[id] = (state.items[id] || 0) + 1
             })
         },
-        decrease(uuid) {
+        decrease(id) {
             set((state) => {
-                state.items[uuid] = Math.max(1, (state.items[uuid] || 1) - 1)
+                state.items[id] = Math.max(1, (state.items[id] || 1) - 1)
             })
         },
-        remove(uuid) {
+        remove(id) {
             set((state) => {
-                delete state.items[uuid]
+                delete state.items[id]
             })
         }
     })), {

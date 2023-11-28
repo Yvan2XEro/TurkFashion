@@ -1,44 +1,47 @@
 import {View, Text, ActivityIndicator} from 'react-native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {TouchableOpacity} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '@react-navigation/native';
-import useCollectionData from '@/hooks/useCollectionData';
 import {useFiltersStore} from '@/store/useFiltersStore';
-import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import {useQuery} from '@tanstack/react-query';
+import {universalFetch} from '@/lib/api/universalfetch';
 
 export default function FilterButton() {
   const insets = useSafeAreaInsets();
-  const {activeFilters, activeCategory, activeSubCategory, minPrice, maxPrice} =
-    useFiltersStore();
   const theme = useTheme();
-  const customQuery = (
-    collectionRef: FirebaseFirestoreTypes.CollectionReference,
-  ) => {
-    let query = collectionRef;
-    if (activeCategory) {
-      query = query.where('categoryUuid', '==', activeCategory) as any;
-    }
-    if (activeSubCategory) {
-      query = query.where('subCategoryUuid', '==', activeSubCategory) as any;
-    }
-    if (minPrice && minPrice.length > 0) {
-      query = query.where('price', '>=', +minPrice) as any;
-    }
-    if (maxPrice && maxPrice.length > 0) {
-      query = query.where('price', '<=', +maxPrice) as any;
-    }
-    Object.entries(activeFilters).forEach(([key, value]) => {
-      query = query.where(key, '==', value) as any;
-    });
-    return query as any;
-  };
-  // [activeFilters, activeCategory, activeSubCategory, minPrice, maxPrice],
-  // );
-  const {data, isLoading} = useCollectionData({
-    collection: 'products',
-    customQuery,
+
+  const {
+    activeCategory,
+    activeSubCategory: subCategory,
+    activeFilters,
+  } = useFiltersStore();
+
+  const filterString = useMemo(() => {
+    return Object.entries(activeFilters)
+      .map(([key, value]) => {
+        return key + '=' + value;
+      })
+      .join(',');
+  }, [activeFilters]);
+  const {data: products, isPending} = useQuery({
+    queryKey: [
+      'products',
+      'sub-category',
+      subCategory?.id,
+      'filters',
+      filterString,
+    ],
+    queryFn: () =>
+      universalFetch({
+        limit: 1,
+        page: 1,
+        path: `/products/search?`,
+        q: `${!!subCategory?.id ? '&sub_category_id=' + subCategory?.id : ''}${
+          '&filters=' + filterString
+        }`,
+      }),
   });
 
   return (
@@ -62,7 +65,7 @@ export default function FilterButton() {
             fontWeight: '600',
             color: theme.colors.background,
           }}>
-          Apply filters {!!data && <>[{data?.length || 0}]</>}
+          Apply filters {!!products?.meta && <>({products.meta.count})</>}
         </Text>
 
         <View
@@ -78,7 +81,7 @@ export default function FilterButton() {
             right: 12,
             bottom: 12,
           }}>
-          {isLoading ? (
+          {isPending ? (
             <ActivityIndicator color={theme.colors.primary} />
           ) : (
             <IonIcons

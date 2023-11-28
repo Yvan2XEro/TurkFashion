@@ -9,13 +9,13 @@ import FilterChip from './FilterChip';
 import FilterButton from './FilterButton';
 import CategoryPicker from './CategoryPicker';
 import {AppSheetBackdrop} from '@/components/atoms/AppSheetBackdrop';
-import useSubcategoryData from '@/hooks/useSubcategoryData';
 import {AppTextInput} from '@/components/atoms/AppTextInput';
 
 const AppFilterForm = () => {
   const {
     activeSubCategory,
     setActiveFilters,
+    resetAllFilters,
     activeFilters,
     minPrice,
     maxPrice,
@@ -26,9 +26,9 @@ const AppFilterForm = () => {
   const theme = useTheme();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const {filters} = useSubcategoryData({
-    subCategoryuuid: activeSubCategory,
-  });
+  const filters = useMemo(() => {
+    return activeSubCategory?.filters || [];
+  }, [activeSubCategory?.filters]);
 
   return (
     <View style={{flex: 1}}>
@@ -49,6 +49,7 @@ const AppFilterForm = () => {
         </Text>
         <TouchableOpacity>
           <Text
+            onPress={resetAllFilters}
             style={{
               color: theme.colors.text,
               opacity: 0.5,
@@ -86,7 +87,12 @@ const AppFilterForm = () => {
             </Text>
             <View style={{flexDirection: 'row', gap: 12}}>
               <View style={{flex: 1}}>
-                <Text>Min Price</Text>
+                <Text
+                  style={{
+                    color: colors.text,
+                  }}>
+                  Min Price
+                </Text>
                 <AppTextInput
                   keyboardType="numeric"
                   value={minPrice}
@@ -94,7 +100,12 @@ const AppFilterForm = () => {
                 />
               </View>
               <View style={{flex: 1}}>
-                <Text>Max Price</Text>
+                <Text
+                  style={{
+                    color: colors.text,
+                  }}>
+                  Max Price
+                </Text>
                 <AppTextInput
                   keyboardType="numeric"
                   value={maxPrice}
@@ -112,7 +123,7 @@ const AppFilterForm = () => {
                   marginBottom: 12,
                   color: colors.text,
                 }}>
-                {f.label}
+                {f.name}
               </Text>
               <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 12}}>
                 {f.values.map((v, i) => {
@@ -120,12 +131,12 @@ const AppFilterForm = () => {
                     <FilterChip
                       key={i}
                       label={v}
-                      isSelected={activeFilters[`filters.${f.uuid}`] === v}
-                      filterKey={`filters.${f.uuid}`}
+                      isSelected={activeFilters[`${f.name}`] === v}
+                      filterKey={f.name}
                       filterValue={v}
                       onPress={() => {
                         setActiveFilters({
-                          key: `filters.${f.uuid}`,
+                          key: `${f.name}`,
                           value: v,
                         });
                       }}

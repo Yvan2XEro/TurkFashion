@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 
 type UseFirestoreItemDataProps = {
     collection: string,
-    uuid: string
+    id: string
 }
 
 const ft = firestore();
-export default function useFirestoreItemData<T extends FirebaseFirestoreTypes.DocumentData>({ collection, uuid }: UseFirestoreItemDataProps) {
+export default function useFirestoreItemData<T extends FirebaseFirestoreTypes.DocumentData>({ collection, id }: UseFirestoreItemDataProps) {
 
     const [data, setData] = useState<T | null>(null);
 
@@ -15,7 +15,7 @@ export default function useFirestoreItemData<T extends FirebaseFirestoreTypes.Do
     const [error, setError] = useState<any>(null);
 
     useEffect(() => {
-        const subscriber = ft.collection<T>(collection).doc(uuid).onSnapshot(
+        const subscriber = ft.collection<T>(collection).doc(id).onSnapshot(
             (querySnapshot) => {
                 const data = querySnapshot.data();
                 setData(data || null);
@@ -29,7 +29,7 @@ export default function useFirestoreItemData<T extends FirebaseFirestoreTypes.Do
             }
         )
         return subscriber
-    }, [collection, uuid]);
+    }, [collection, id]);
 
     return ({
         data,

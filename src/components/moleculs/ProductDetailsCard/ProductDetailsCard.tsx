@@ -28,7 +28,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('DetailsScreen', {
-            id: data.uuid,
+            id: data.id,
           });
         }}
         style={{padding: 6}}>
@@ -100,7 +100,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    increase(data.uuid);
+                    increase(data.id);
                   }}
                   style={{
                     paddingHorizontal: 12,
@@ -109,7 +109,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
                     backgroundColor: colors.primary,
                     position: 'relative',
                   }}>
-                  {items[data.uuid] && items[data.uuid] > 0 && (
+                  {items[data.id] && items[data.id] > 0 && (
                     <View
                       style={{
                         position: 'absolute',
@@ -127,7 +127,7 @@ export default function ProductDetailsCard({data, index}: TProps) {
                           paddingHorizontal: 4,
                           color: colors.primary,
                         }}>
-                        {items[data.uuid]}
+                        {items[data.id]}
                       </Text>
                     </View>
                   )}
