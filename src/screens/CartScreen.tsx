@@ -1,145 +1,47 @@
 import {AnimatedHeaderWrapper} from '@/components/organims/AnimatedHeaderWrapper';
-import React, {useCallback} from 'react';
-import {FlatList, Image, Text, View} from 'react-native';
-import useCartCount from '@/hooks/useCartCount';
+import React from 'react';
+import {View} from 'react-native';
 import {useCartStore} from '@/store/useCartStore';
-import {FlashList} from '@shopify/flash-list';
-import {TouchableOpacity} from 'react-native';
-import IonIcons from 'react-native-vector-icons/Ionicons';
-import {Product} from '@/types/models';
-import {useTheme} from '@react-navigation/native';
 import {CartFooter} from '@/components/moleculs/CartFooter';
+import {useQuery} from '@tanstack/react-query';
+import {fetchWithAuth} from '@/lib/api/app-fetch';
+import {CartList} from '@/components/organims/CartList';
+import {Product} from '@/lib/api/products';
+import CartListSkeleton from '@/components/organims/CartList/CartListSkeleton';
 
 export default function CartScreen() {
-  const {count} = useCartCount();
   const {items} = useCartStore();
+
+  const {data: products, isLoading} = useQuery({
+    queryKey: ['products', Object.keys(items)],
+    enabled: Object.keys(items).length > 0,
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          `/products/find/${Object.keys(items).join(',')}`,
+        );
+        const data = await response.json();
+        if (response.ok) {
+          return data as Product[];
+        }
+        return Promise.reject(data);
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    },
+  });
 
   return (
     <>
       <AnimatedHeaderWrapper title="Cart">
         <View style={{marginTop: 20, flex: 1}}>
-          <FlatList
-            data={[]}
-            keyExtractor={item => item.id}
-            renderItem={({item, index}: {item: Product; index: number}) => (
-              <CartItem item={item} />
-            )}
-            // estimatedItemSize={(data || []).length}
-          />
+          {isLoading && <CartListSkeleton />}
+          {!isLoading && products && (
+            <CartList items={items} products={products || []} />
+          )}
         </View>
       </AnimatedHeaderWrapper>
       <CartFooter />
     </>
-  );
-}
-
-function CartItem({item}: {item: Product}) {
-  const {
-    items,
-    remove: removeItemFromCart,
-    increase,
-    decrease,
-  } = useCartStore();
-
-  const count = items[item.id + ''];
-
-  const {colors} = useTheme();
-
-  const onDecrease = useCallback(() => {
-    if (count <= 1) {
-      return removeItemFromCart(item.id || '');
-    }
-    decrease(item.id || '');
-  }, [items, decrease, item.id, count]);
-
-  const onIncrease = useCallback(() => {
-    increase(item.id || '');
-  }, [items, increase, item.id]);
-
-  return (
-    <TouchableOpacity
-      style={{
-        flexDirection: 'row',
-        gap: 8,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: colors.card,
-        borderRadius: 12,
-      }}>
-      <View style={{flexDirection: 'row', gap: 8, alignItems: 'center'}}>
-        <Image
-          style={{borderRadius: 8}}
-          source={{uri: item.photoUrl}}
-          width={70}
-          height={70}
-        />
-        <View style={{paddingVertical: 8}}>
-          <Text
-            style={{
-              flex: 1,
-              fontSize: 16,
-              fontWeight: '600',
-              color: colors.text,
-              textAlign: 'center',
-              textShadowColor: 'rgba(0,0,0,0.2)',
-              textShadowOffset: {
-                height: 1,
-                width: 0,
-              },
-              textShadowRadius: 4,
-            }}>
-            {item.name}
-          </Text>
-          <Text style={{color: colors.text}}>
-            {count} x ${item.price} = ${count * item.price}
-          </Text>
-        </View>
-      </View>
-      <View style={{flexDirection: 'row'}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 6,
-            backgroundColor: colors.primary,
-            padding: 6,
-            borderRadius: 100,
-          }}>
-          <TouchableOpacity
-            onPress={onDecrease}
-            style={{
-              backgroundColor: colors.card,
-              width: 34,
-              aspectRatio: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 34,
-            }}>
-            <IonIcons name="remove" size={20} color={colors.text} />
-          </TouchableOpacity>
-
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: '600',
-              color: colors.background,
-            }}>
-            {count}
-          </Text>
-          <TouchableOpacity
-            onPress={onIncrease}
-            style={{
-              backgroundColor: colors.card,
-              width: 34,
-              aspectRatio: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 34,
-            }}>
-            <IonIcons name="add" size={20} color={colors.text} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </TouchableOpacity>
   );
 }

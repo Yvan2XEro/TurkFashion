@@ -16,12 +16,9 @@ type TProps = {
 const FilterChip = (props: TProps) => {
   const {isSelected, label, left, filterKey, filterValue, onPress} = props;
   const theme = useTheme();
-  const {activeCategory, activeSubCategory: subCategory} = useFiltersStore();
-  const {
-    data: products,
-    refetch,
-    isPending,
-  } = useQuery({
+  const {activeCategory: category, activeSubCategory: subCategory} =
+    useFiltersStore();
+  const {data: products} = useQuery({
     queryKey: [
       'products',
       'sub-category',
@@ -34,12 +31,12 @@ const FilterChip = (props: TProps) => {
       universalFetch({
         limit: 1,
         page: 1,
-        path: `/products/search?`,
+        path: `/products/search`,
         q: `${!!subCategory?.id ? '&sub_category_id=' + subCategory?.id : ''}${
           !!filterKey &&
           !!filterValue &&
           '&filters=' + filterKey + '=' + filterValue
-        }`,
+        }${!!category?.id ? '&category_id=' + category?.id : ''}`,
       }),
   });
 

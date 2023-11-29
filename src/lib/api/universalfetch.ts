@@ -9,7 +9,7 @@ type FetchTProps = {
 }
 export async function universalFetch<T extends DefaultObject>({ path, page, limit, q }: FetchTProps) {
     try {
-        const response = await fetchWithAuth(path + `?page=${page}&limit=${limit}&${q || ""}`)
+        const response = await fetchWithAuth(path + `?page=${page}&limit=${limit}${q || ""}`)
         const data = await response.json();
         if (response.ok) {
             return data as Paginated<T>

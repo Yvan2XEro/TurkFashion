@@ -1,6 +1,5 @@
-import {View, Text, TextInput} from 'react-native';
+import {View, TextInput} from 'react-native';
 import React from 'react';
-import {AppSearchBar} from '@/components/moleculs/AppSearchBar';
 import {RootStackScreenProps} from '@/navigations/root-navigation';
 import Animated from 'react-native-reanimated';
 import {TouchableOpacity} from 'react-native-gesture-handler';

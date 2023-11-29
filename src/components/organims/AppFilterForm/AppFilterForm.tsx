@@ -36,6 +36,8 @@ const AppFilterForm = () => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          borderBottomWidth: 1,
+          borderColor: colors.border,
           paddingHorizontal: 24,
         }}>
         <Text

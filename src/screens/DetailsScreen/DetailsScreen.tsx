@@ -29,6 +29,7 @@ import {
   FooterSkeleton,
   ImageSkeleton,
 } from './DetailsScreenSkeleton';
+import {useCartStore} from '@/store/useCartStore';
 
 const {width} = Dimensions.get('window');
 const IMG_HEIGHT = 300;
@@ -36,6 +37,7 @@ const IMG_HEIGHT = 300;
 type TProps = RootStackScreenProps<'DetailsScreen'>;
 const DetailsPage = ({route, navigation}: TProps) => {
   const id = route.params.id;
+  const {items, decrease, increase, remove} = useCartStore();
   const {data: product, isLoading} = useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
@@ -44,14 +46,23 @@ const DetailsPage = ({route, navigation}: TProps) => {
       });
     },
   });
+
   const {colors} = useTheme();
   const colorSheme = useColorScheme();
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
-  const onDecrease = useCallback(() => {}, []);
+  const onDecrease = useCallback(() => {
+    if (items[id] > 1) {
+      decrease(id);
+    } else {
+      remove(id);
+    }
+  }, [items, id]);
 
-  const onIncrease = useCallback(() => {}, []);
+  const onIncrease = useCallback(() => {
+    increase(id);
+  }, [items]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -252,6 +263,7 @@ const DetailsPage = ({route, navigation}: TProps) => {
         {!isLoading && (
           <View
             style={{
+              height: 60,
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -273,67 +285,71 @@ const DetailsPage = ({route, navigation}: TProps) => {
               </Text>
             </TouchableOpacity>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 6,
-                backgroundColor: colors.primary,
-                padding: 6,
-                borderRadius: 100,
-              }}>
-              <TouchableOpacity
-                onPress={onDecrease}
-                style={{
-                  backgroundColor: colors.card,
-                  width: 34,
-                  aspectRatio: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 34,
-                }}>
-                <IonIcons name="remove" size={20} color={colors.text} />
-              </TouchableOpacity>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Ionicons
-                  name="cart-outline"
-                  size={24}
-                  color={colors.background}
-                />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: '600',
-                    color: colors.background,
-                  }}>
-                  10
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={onIncrease}
-                style={{
-                  backgroundColor: colors.card,
-                  width: 34,
-                  aspectRatio: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 34,
-                }}>
-                <IonIcons name="add" size={20} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-
-            <AppButton onPress={() => {}}>
+            {!!items[id] && (
               <View
-                style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
-                <Ionicons
-                  name="cart-outline"
-                  size={24}
-                  color={colors.background}
-                />
-                <Text style={{color: colors.background}}>Add to cart</Text>
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6,
+                  backgroundColor: colors.primary,
+                  padding: 6,
+                  borderRadius: 100,
+                }}>
+                <TouchableOpacity
+                  onPress={onDecrease}
+                  style={{
+                    backgroundColor: colors.card,
+                    width: 34,
+                    aspectRatio: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 34,
+                  }}>
+                  <IonIcons name="remove" size={20} color={colors.text} />
+                </TouchableOpacity>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Ionicons
+                    name="cart-outline"
+                    size={24}
+                    color={colors.background}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: '600',
+                      color: colors.background,
+                    }}>
+                    {items[id]}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={onIncrease}
+                  style={{
+                    backgroundColor: colors.card,
+                    width: 34,
+                    aspectRatio: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 34,
+                  }}>
+                  <IonIcons name="add" size={20} color={colors.text} />
+                </TouchableOpacity>
               </View>
-            </AppButton>
+            )}
+
+            {!items[id] && (
+              <AppButton onPress={onIncrease}>
+                <View
+                  style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
+                  <Ionicons
+                    name="cart-outline"
+                    size={24}
+                    color={colors.background}
+                  />
+                  <Text style={{color: colors.background}}>Add to cart</Text>
+                </View>
+              </AppButton>
+            )}
           </View>
         )}
       </Animated.View>

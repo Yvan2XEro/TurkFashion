@@ -11,6 +11,7 @@ type Actions = {
     increase: (id: number) => void
     decrease: (id: number) => void
     remove: (id: number) => void
+    clear: () => void
 }
 
 export const useCartStore = create<State & Actions>()(
@@ -29,6 +30,11 @@ export const useCartStore = create<State & Actions>()(
         remove(id) {
             set((state) => {
                 delete state.items[id]
+            })
+        },
+        clear() {
+            set((state) => {
+                state.items = {}
             })
         }
     })), {

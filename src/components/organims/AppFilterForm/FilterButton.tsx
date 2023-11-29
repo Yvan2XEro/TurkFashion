@@ -1,46 +1,27 @@
 import {View, Text, ActivityIndicator} from 'react-native';
-import React, {useCallback, useMemo} from 'react';
+import React from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {TouchableOpacity} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '@react-navigation/native';
-import {useFiltersStore} from '@/store/useFiltersStore';
 import {useQuery} from '@tanstack/react-query';
 import {universalFetch} from '@/lib/api/universalfetch';
+import useFilterSearchParams from '@/hooks/useFilterSearchParams';
 
 export default function FilterButton() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
 
-  const {
-    activeCategory,
-    activeSubCategory: subCategory,
-    activeFilters,
-  } = useFiltersStore();
+  const searchPath = useFilterSearchParams();
 
-  const filterString = useMemo(() => {
-    return Object.entries(activeFilters)
-      .map(([key, value]) => {
-        return key + '=' + value;
-      })
-      .join(',');
-  }, [activeFilters]);
   const {data: products, isPending} = useQuery({
-    queryKey: [
-      'products',
-      'sub-category',
-      subCategory?.id,
-      'filters',
-      filterString,
-    ],
+    queryKey: ['products', 'sub-category', searchPath],
     queryFn: () =>
       universalFetch({
         limit: 1,
         page: 1,
-        path: `/products/search?`,
-        q: `${!!subCategory?.id ? '&sub_category_id=' + subCategory?.id : ''}${
-          '&filters=' + filterString
-        }`,
+        path: `/products/search`,
+        q: searchPath,
       }),
   });
 
