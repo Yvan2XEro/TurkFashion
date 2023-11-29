@@ -1,7 +1,6 @@
 import {View, TextInput} from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {RootStackScreenProps} from '@/navigations/root-navigation';
-import Animated from 'react-native-reanimated';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTheme} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
@@ -13,6 +12,18 @@ type TProps = RootStackScreenProps<'SearchScreen'>;
 
 export default function SearchScreen({navigation}: TProps) {
   const {colors} = useTheme();
+  const [q, setQ] = React.useState('');
+  const delayedSearch = useCallback(
+    debounce(async (text: string) => {
+      if (text !== '') {
+        setQ(text);
+      }
+    }, 500),
+    [],
+  );
+  const handleSearchChange = (text: string) => {
+    delayedSearch(text);
+  };
   return (
     <View
       style={{
@@ -50,6 +61,7 @@ export default function SearchScreen({navigation}: TProps) {
               color: colors.primary,
               opacity: 0.5,
             }}
+            onChangeText={handleSearchChange}
             placeholderTextColor={colors.text}
             placeholder="Search"
             autoFocus
@@ -59,7 +71,19 @@ export default function SearchScreen({navigation}: TProps) {
         <AppFilterButton />
       </View>
 
-      <ProductsList selectedSubCategory={null} />
+      <ProductsList selectedSubCategory={null} q={q} search />
     </View>
   );
 }
+
+const debounce = <F extends (...args: any[]) => any>(fn: F, delay: number) => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return function (this: ThisParameterType<F>, ...args: Parameters<F>) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  } as F;
+};

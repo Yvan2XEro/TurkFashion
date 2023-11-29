@@ -5,28 +5,41 @@ import {universalFetch} from '@/lib/api/universalfetch';
 import {Product} from '@/lib/api/products';
 import {useQuery} from '@tanstack/react-query';
 import ProductsListSkeleton from './ProductsListSkeleton';
+import useFilterSearchParams from '@/hooks/useFilterSearchParams';
 
 type TProps = {
   selectedSubCategory: number | null;
+  q: string;
+  search?: boolean;
 };
 
 export default function ProductsList(props: TProps) {
-  const {selectedSubCategory} = props;
+  const {selectedSubCategory, q, search = false} = props;
   const [page, setPage] = React.useState(1);
+  const filterQueryParams = useFilterSearchParams();
+
+  const handledQueryParams = React.useMemo(() => {
+    if (!search) {
+      return `${
+        !!selectedSubCategory ? '&sub_category_id=' + selectedSubCategory : ''
+      }`;
+    }
+    return `${filterQueryParams}${q.length > 0 ? '&q=' + q : ''}`;
+  }, [selectedSubCategory, filterQueryParams, q, search]);
+  console.log(handledQueryParams);
+
   const {
     data: products,
     refetch,
     isPending,
   } = useQuery({
-    queryKey: ['products', 'sub-category', selectedSubCategory],
+    queryKey: ['products', 'sub-category', handledQueryParams],
     queryFn: () =>
       universalFetch<Product>({
         limit: 100,
         page,
         path: `/products/search?`,
-        q: `${
-          !!selectedSubCategory ? '&sub_category_id=' + selectedSubCategory : ''
-        }`,
+        q: handledQueryParams,
       }),
   });
   if (isPending) {
