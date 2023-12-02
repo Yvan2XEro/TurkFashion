@@ -18,6 +18,7 @@ import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {useAuthStore} from '@/store/useAuthStore';
 import AppProviders from '@/context/AppProviders';
 import SearchScreen from '@/screens/SearchScreen';
+import useTokenRefresher from '@/hooks/useTokenRefresher';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;
@@ -32,20 +33,10 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigationWithoutContainer() {
+  useTokenRefresher();
   const colorScheme = useColorScheme();
-  const {onUserChange, user} = useAuthStore();
-
-  const [initializing, setInitializing] = useState(true);
-
-  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    onUserChange(user);
-    if (initializing) setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
+  const {user} = useAuthStore();
+  console.log(user);
 
   if (!user) {
     return (

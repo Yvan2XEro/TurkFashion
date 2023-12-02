@@ -1,19 +1,18 @@
-import { FirebaseAuthTypes } from '@react-native-firebase/auth'
+import { User } from '@/lib/api/auth'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
 type State = {
-    user: FirebaseAuthTypes.User | null
+    user: User | null | undefined
 }
 
 type Actions = {
-    onUserChange: (user: FirebaseAuthTypes.User | null) => void
+    onUserChange: (user: User | null | undefined) => void
 }
 
 export const useAuthStore = create<State & Actions>()(
     immer((set) => ({
-        user: null,
-        initializing: true,
+        user: undefined,
         onUserChange(u) {
             set((state) => {
                 state.user = u

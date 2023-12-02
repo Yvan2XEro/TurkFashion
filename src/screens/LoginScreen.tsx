@@ -4,6 +4,7 @@ import {AuthScreenWrapper} from '@/components/moleculs/AuthScreenWrapper';
 import {useTheme} from '@react-navigation/native';
 import {SignInButtons} from '@/components/moleculs/SignInButtons';
 import {BlurView} from '@react-native-community/blur';
+import {LoginForm} from '@/components/organims/LoginForm';
 
 export default function LoginScreen() {
   const colorScheme = useColorScheme();
@@ -56,7 +57,14 @@ export default function LoginScreen() {
                 Turk Fashion
               </Text>
             </View>
-            <View style={{gap: 10}}>
+            <LoginForm />
+            <View
+              style={{
+                gap: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
               <SignInButtons />
             </View>
           </View>

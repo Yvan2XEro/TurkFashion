@@ -19,6 +19,7 @@ export default function AppTextInput(props: TProps) {
         },
         props.style,
       ]}
+      placeholderTextColor={colors.text}
     />
   );
 }

@@ -2,10 +2,10 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '@react-navigation/native';
 import React from 'react';
-import useFireAuth from '@/hooks/useFireAuth';
+import useAppAuth from '@/hooks/useAppAuth';
 
 export default function SignInButtons() {
-  const {onGoogleButtonPress} = useFireAuth();
+  const {onGoogleButtonPress} = useAppAuth();
 
   return (
     <>
@@ -43,18 +43,16 @@ function SinInButton({label, ionIconName, onPress}: TProps) {
   return (
     <TouchableOpacity
       style={{
-        flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1,
         borderColor: colors.text,
-        paddingVertical: 3,
+        padding: 8,
         borderRadius: 10,
         justifyContent: 'center',
         gap: 4,
       }}
       onPress={onPress}>
-      <IonIcon name={ionIconName} size={32} color={colors.text} />
-      <Text style={{color: colors.text}}>{label}</Text>
+      <IonIcon name={ionIconName} size={25} color={colors.text} />
     </TouchableOpacity>
   );
 }
