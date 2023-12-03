@@ -354,7 +354,7 @@ const DetailsPage = ({route, navigation}: TProps) => {
         )}
       </Animated.View>
 
-      <FloatingCart />
+      {/* <FloatingCart /> */}
     </View>
   );
 };

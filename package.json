@@ -45,6 +45,7 @@
     "react-native-skeleton-placeholder": "^5.2.4",
     "react-native-toast-message": "^2.1.7",
     "react-native-vector-icons": "^10.0.1",
+    "react-query": "^3.39.3",
     "reanimated-masonry-list": "^1.0.1",
     "zod": "^3.22.4",
     "zustand": "^4.4.6"
