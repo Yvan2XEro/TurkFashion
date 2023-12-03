@@ -1,13 +1,10 @@
-import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React, {useCallback} from 'react';
 import {useCartStore} from '@/store/useCartStore';
 import {useTheme} from '@react-navigation/native';
-import {SCREEN_PADDING_HORIZONTAL} from '@/constants';
 import {substr} from '@/lib/utils/string';
 import {Product} from '@/lib/api/products';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-
-const {width} = Dimensions.get('window');
 
 export default function CartItem({item}: {item: Product}) {
   const {
@@ -17,19 +14,19 @@ export default function CartItem({item}: {item: Product}) {
     decrease,
   } = useCartStore();
 
-  const count = items[item.id];
+  const count = items[`${item.id}`];
 
   const {colors} = useTheme();
 
   const onDecrease = useCallback(() => {
     if (count <= 1) {
-      return removeItemFromCart(item.id);
+      return removeItemFromCart(`${item.id}`);
     }
-    decrease(item.id);
+    decrease(`${item.id}`);
   }, [items, decrease, item.id, count]);
 
   const onIncrease = useCallback(() => {
-    increase(item.id);
+    increase(`${item.id}`);
   }, [items, increase, item.id]);
 
   return (

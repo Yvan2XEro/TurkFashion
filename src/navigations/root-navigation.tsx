@@ -14,7 +14,6 @@ import HomeStack, {TabsStackParamList} from './tab-navigation';
 import {StatusBar, useColorScheme} from 'react-native';
 import {DetailsScreen} from '@/screens/DetailsScreen';
 import AuthNavigator from './auth-navigator';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {useAuthStore} from '@/store/useAuthStore';
 import AppProviders from '@/context/AppProviders';
 import SearchScreen from '@/screens/SearchScreen';
@@ -36,7 +35,7 @@ function RootNavigationWithoutContainer() {
   useTokenRefresher();
   const colorScheme = useColorScheme();
   const {user} = useAuthStore();
-  console.log(user);
+  console.log('USER', user);
 
   if (!user) {
     return (

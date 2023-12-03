@@ -2,16 +2,13 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import { getCurrentUser, googleAuth } from '@/lib/api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useEffect } from 'react';
 
 const webClientId = process.env.WEB_CLIENT_ID
 
 
 GoogleSignin.configure({
-    webClientId,
-    // offlineAccess: true,
-    // hostedDomain: '',
-    // forceCodeForRefreshToken: true,
-    // accountName: '',
+    webClientId
 });
 
 export default function useAppAuth() {
@@ -23,15 +20,18 @@ export default function useAppAuth() {
         if (!!refreshToken)
             await AsyncStorage.setItem('refreshToken', refreshToken);
 
-        try {
-            if (!!accessToken && !!refreshToken)
-                onUserChange(undefined)
+        await fetchCurrentUser()
+    }
 
+    async function fetchCurrentUser() {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        if (!accessToken) return
+        try {
+            onUserChange(undefined)
 
             const user = await getCurrentUser()
             if (!!user)
                 return onUserChange(user)
-
 
             onUserChange(null)
         } catch (error) {
@@ -39,6 +39,9 @@ export default function useAppAuth() {
         }
     }
 
+    useEffect(() => {
+        (async () => await fetchCurrentUser())()
+    }, [])
     async function logout() {
         await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.removeItem('refreshToken');

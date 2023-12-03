@@ -3,8 +3,7 @@ import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useAuthStore} from '@/store/useAuthStore';
-const AVATAR_URL =
-  'https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80';
+import {AppAvatar} from '../AppAvatar';
 
 export default function HiUser() {
   const {colors} = useTheme();
@@ -17,13 +16,7 @@ export default function HiUser() {
         alignItems: 'center',
         gap: 8,
       }}>
-      <Image
-        source={{
-          uri: user?.photo || AVATAR_URL,
-        }}
-        style={{width: 52, aspectRatio: 1, borderRadius: 52}}
-        resizeMode="cover"
-      />
+      <AppAvatar uri={user?.photo} />
       <View style={{flex: 1}}>
         <Text
           style={{

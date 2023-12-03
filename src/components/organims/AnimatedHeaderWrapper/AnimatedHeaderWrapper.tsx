@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: SCREEN_PADDING_HORIZONTAL,
-    paddingTop: 46,
+    paddingTop: 56,
   },
   title: {
     position: 'absolute',

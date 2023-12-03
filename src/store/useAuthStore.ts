@@ -11,11 +11,14 @@ type Actions = {
 }
 
 export const useAuthStore = create<State & Actions>()(
-    immer((set) => ({
+    ((set) => ({
         user: undefined,
         onUserChange(u) {
             set((state) => {
-                state.user = u
+                return {
+                    ...state,
+                    user: u
+                }
             })
         }
     }))
