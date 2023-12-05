@@ -1,4 +1,4 @@
-import React, {useCallback, useLayoutEffect, useMemo} from 'react';
+import React, {useCallback, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -354,7 +354,7 @@ const DetailsPage = ({route, navigation}: TProps) => {
         )}
       </Animated.View>
 
-      {/* <FloatingCart /> */}
+      <FloatingCart />
     </View>
   );
 };

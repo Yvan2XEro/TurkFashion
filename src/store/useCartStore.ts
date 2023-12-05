@@ -15,44 +15,26 @@ type Actions = {
 }
 
 export const useCartStore = create<State & Actions>()(
-    persist(((set) => ({
+    persist(immer((set) => ({
         items: {},
         increase(id) {
             set((state) => {
-                return {
-                    ...state,
-                    items: {
-                        ...state.items,
-                        [id]: (state.items[id] || 0) + 1
-                    }
-                }
+                state.items[id] = (state.items[id] || 0) + 1
             })
         },
         decrease(id) {
             set((state) => {
-                return {
-                    ...state,
-                    items: {
-                        ...state.items,
-                        [id]: Math.max(1, (state.items[id] || 1) - 1)
-                    }
-                }
+                state.items[id] = Math.max(1, (state.items[id] || 1) - 1)
             })
         },
         remove(id) {
             set((state) => {
-                const newItems = state.items
-                delete newItems[id]
-
-                return {
-                    ...state,
-                    items: newItems
-                }
+                delete state.items[id]
             })
         },
         clear() {
             set((state) => {
-                return { ...state, items: {} }
+                state.items = {}
             })
         }
     })), {
