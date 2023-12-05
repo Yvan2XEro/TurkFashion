@@ -5,7 +5,7 @@ import {useAuthStore} from '@/store/useAuthStore';
 import {useTheme} from '@react-navigation/native';
 import {AppAvatar} from '@/components/atoms/AppAvatar';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-import useAppAuth from '@/hooks/useAppAuth';
+import {useAppAuth} from '@/context/app-auth';
 
 export default function ProfileScreen() {
   const {user} = useAuthStore();

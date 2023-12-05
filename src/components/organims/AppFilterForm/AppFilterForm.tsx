@@ -115,7 +115,7 @@ const AppFilterForm = () => {
               </View>
             </View>
           </View>
-          {/* {filters.map((f, i) => (
+          {filters.map((f, i) => (
             <View key={i} style={{paddingHorizontal: 24}}>
               <Text
                 style={{
@@ -146,13 +146,13 @@ const AppFilterForm = () => {
                 })}
               </View>
             </View>
-          ))} */}
+          ))}
         </View>
       </BottomSheetScrollView>
       {/* Button */}
       <FilterButton />
 
-      {/* <BottomSheetModal
+      <BottomSheetModal
         snapPoints={['70%']}
         index={0}
         ref={bottomSheetModalRef}
@@ -165,7 +165,7 @@ const AppFilterForm = () => {
           backgroundColor: colors.primary,
         }}>
         <CategoryPicker onClose={() => bottomSheetModalRef.current?.close()} />
-      </BottomSheetModal> */}
+      </BottomSheetModal>
     </View>
   );
 };

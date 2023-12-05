@@ -1,8 +1,8 @@
 
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import useAppAuth from './useAppAuth';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useAppAuth } from '@/context/app-auth';
 
 const pubAPI = process.env.API_URL;
 

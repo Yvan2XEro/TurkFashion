@@ -1,10 +1,10 @@
-import useAppAuth from '@/hooks/useAppAuth';
+import {useAppAuth} from '@/context/app-auth';
 import {LoginPayload, credentialsSignIn} from '@/lib/api/auth';
 import {useMutation} from 'react-query';
 import {useState} from 'react';
 
 export default function useLoginForm() {
-  const {autthenticate} = useAppAuth();
+  const {authenticate: autthenticate} = useAppAuth();
   const [passwordVisible, setpasswordVisible] = useState(false);
   const loginMutation = useMutation({
     mutationFn: credentialsSignIn,
