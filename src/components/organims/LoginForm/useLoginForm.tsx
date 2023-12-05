@@ -1,6 +1,6 @@
 import useAppAuth from '@/hooks/useAppAuth';
 import {LoginPayload, credentialsSignIn} from '@/lib/api/auth';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation} from 'react-query';
 import {useState} from 'react';
 
 export default function useLoginForm() {
@@ -12,7 +12,7 @@ export default function useLoginForm() {
   });
 
   async function onSubmit(data: LoginPayload) {
-    if (loginMutation.isPending) {
+    if (loginMutation.isLoading) {
       return;
     }
     await loginMutation.mutateAsync(data);
@@ -21,6 +21,6 @@ export default function useLoginForm() {
     passwordVisible,
     togglePasswordVisible: () => setpasswordVisible(v => !v),
     onSubmit,
-    isPending: loginMutation.isPending,
+    isPending: loginMutation.isLoading,
   };
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import {ProductDetailsCard} from '@/components/moleculs/ProductDetailsCard';
 import {universalFetch} from '@/lib/api/universalfetch';
 import {Product} from '@/lib/api/products';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery} from 'react-query';
 import ProductsListSkeleton from './ProductsListSkeleton';
 import useFilterSearchParams from '@/hooks/useFilterSearchParams';
 
@@ -31,7 +31,7 @@ export default function ProductsList(props: TProps) {
   const {
     data: products,
     refetch,
-    isPending,
+    isLoading,
   } = useQuery({
     queryKey: ['products', 'sub-category', handledQueryParams],
     queryFn: () =>
@@ -42,7 +42,7 @@ export default function ProductsList(props: TProps) {
         q: handledQueryParams,
       }),
   });
-  if (isPending) {
+  if (isLoading) {
     return <ProductsListSkeleton />;
   }
   return (

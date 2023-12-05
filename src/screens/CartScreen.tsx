@@ -3,7 +3,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {useCartStore} from '@/store/useCartStore';
 import {CartFooter} from '@/components/moleculs/CartFooter';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery} from 'react-query';
 import {fetchWithAuth} from '@/lib/api/app-fetch';
 import {CartList} from '@/components/organims/CartList';
 import {Product} from '@/lib/api/products';

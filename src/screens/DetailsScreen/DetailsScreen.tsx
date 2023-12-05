@@ -21,7 +21,7 @@ import {AppButton} from '@/components/atoms/AppButton';
 import {useColorScheme} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {FloatingCart} from '@/components/moleculs/FloatingCart';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery} from 'react-query';
 import {universalRetrieve} from '@/lib/api/universalfetch';
 import {Product} from '@/lib/api/products';
 import {

@@ -4,7 +4,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {TouchableOpacity} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '@react-navigation/native';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery} from 'react-query';
 import {universalFetch} from '@/lib/api/universalfetch';
 import useFilterSearchParams from '@/hooks/useFilterSearchParams';
 
@@ -14,7 +14,7 @@ export default function FilterButton() {
 
   const searchPath = useFilterSearchParams();
 
-  const {data: products, isPending} = useQuery({
+  const {data: products, isLoading} = useQuery({
     queryKey: ['products', 'sub-category', searchPath],
     queryFn: () =>
       universalFetch({
@@ -62,7 +62,7 @@ export default function FilterButton() {
             right: 12,
             bottom: 12,
           }}>
-          {isPending ? (
+          {isLoading ? (
             <ActivityIndicator color={theme.colors.primary} />
           ) : (
             <IonIcons

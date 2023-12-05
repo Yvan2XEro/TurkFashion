@@ -1,7 +1,7 @@
 import {universalFetch} from '@/lib/api/universalfetch';
 import {useFiltersStore} from '@/store/useFiltersStore';
 import {useTheme} from '@react-navigation/native';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery} from 'react-query';
 import {ReactNode} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 

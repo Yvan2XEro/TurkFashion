@@ -61,7 +61,7 @@ export default function SearchScreen({navigation}: TProps) {
               color: colors.primary,
               opacity: 0.5,
             }}
-            onChangeText={handleSearchChange}
+            onChangeText={setQ}
             placeholderTextColor={colors.text}
             placeholder="Search"
             autoFocus
@@ -71,7 +71,7 @@ export default function SearchScreen({navigation}: TProps) {
         <AppFilterButton />
       </View>
 
-      <ProductsList selectedSubCategory={null} q={q} search />
+      {/* <ProductsList selectedSubCategory={null} q={q} search /> */}
     </View>
   );
 }

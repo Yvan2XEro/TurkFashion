@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import {useTheme} from '@react-navigation/native';
 import {useFiltersStore} from '@/store/useFiltersStore';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery} from 'react-query';
 import {universalFetch} from '@/lib/api/universalfetch';
 import {FlashList} from '@shopify/flash-list';
 import {SubCategory} from '@/lib/api/sub-categories';
@@ -24,7 +24,7 @@ export default function SubCategoriesList(props: TProps) {
   const {selectedSubCategory, setSelectedSubCategory} = props;
   const {colors} = useTheme();
   const [page, setPage] = React.useState(1);
-  const {isPending, data: subCategories} = useQuery({
+  const {isLoading, data: subCategories} = useQuery({
     queryKey: ['sub-categories'],
     queryFn: () =>
       universalFetch<SubCategory>({
@@ -36,7 +36,7 @@ export default function SubCategoriesList(props: TProps) {
 
   return (
     <View>
-      {isPending ? (
+      {isLoading ? (
         <SubCategoriesListSkeleton />
       ) : (
         <FlashList

@@ -83,10 +83,16 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug_ks.keystore')
+
+            storeFile file('debug.keystore')
             storePassword 'android'
-            keyAlias 'debug_ks'
+            keyAlias 'androiddebugkey'
             keyPassword 'android'
+
+            // storeFile file('debug_ks.keystore')
+            // storePassword 'android'
+            // keyAlias 'debug_ks'
+            // keyPassword 'android'
         }
     }
     buildTypes {

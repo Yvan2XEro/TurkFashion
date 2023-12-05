@@ -8,7 +8,8 @@ const webClientId = process.env.WEB_CLIENT_ID
 
 
 GoogleSignin.configure({
-    webClientId
+    webClientId,
+    offlineAccess: true
 });
 
 export default function useAppAuth() {
@@ -48,7 +49,6 @@ export default function useAppAuth() {
         onUserChange(null)
     }
 
-
     async function onGoogleButtonPress() {
         try {
             await GoogleSignin.hasPlayServices();
@@ -56,6 +56,8 @@ export default function useAppAuth() {
             const userInfos = await GoogleSignin.signIn();
 
             if (!!userInfos.idToken) {
+
+                console.log("ISISIS", userInfos)
 
                 const cred = await googleAuth(userInfos);
 

@@ -6,7 +6,7 @@ import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {useFiltersStore} from '@/store/useFiltersStore';
 import {Image} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery} from 'react-query';
 import {universalFetch} from '@/lib/api/universalfetch';
 import {SubCategory} from '@/lib/api/sub-categories';
 import {Category} from '@/lib/api/categories';
@@ -17,7 +17,7 @@ type TProps = {
 };
 export default function CategoryPicker({onClose}: TProps) {
   const theme = useTheme();
-  const {isPending, data: subCategories} = useQuery({
+  const {isLoading, data: subCategories} = useQuery({
     queryKey: ['sub-categories'],
     queryFn: () =>
       universalFetch<SubCategory>({
@@ -26,7 +26,7 @@ export default function CategoryPicker({onClose}: TProps) {
         path: '/sub-categories',
       }),
   });
-  const {isPending: categoriesPending, data: categories} = useQuery({
+  const {isLoading: categoriesPending, data: categories} = useQuery({
     queryKey: ['categories'],
     queryFn: () =>
       universalFetch<Category>({
@@ -51,7 +51,7 @@ export default function CategoryPicker({onClose}: TProps) {
   }, [subCategories?.data, activeSubCategory]);
 
   function RenderContent() {
-    if (isPending) {
+    if (isLoading) {
       return (
         <>
           {Array.from({length: 10}).map((_, i) => (
