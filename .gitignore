@@ -65,6 +65,5 @@ yarn-error.log
 # testing
 /coverage
 bun.lockb
-yarn.lock
 .env
 google-services.json
