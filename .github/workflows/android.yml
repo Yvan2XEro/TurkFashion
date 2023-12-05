@@ -27,6 +27,7 @@ jobs:
       - name: Build Android
         run: |
           npx react-native run-android --variant=release
+          adb devices
 
       - name: Run tests
         run: |
