@@ -1,4 +1,4 @@
-name: Build and Test Android
+name: Build Android APK
 
 on:
   push:
@@ -24,14 +24,10 @@ jobs:
         run: |
           yarn install
 
-      - name: Build Android
+      - name: Build Android APK
         run: |
-          npx react-native run-android --variant=release
-          adb devices
-
-      - name: Run tests
-        run: |
-          # Ajouter la commande de test ici
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle
+          cd android && ./gradlew assembleRelease
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
