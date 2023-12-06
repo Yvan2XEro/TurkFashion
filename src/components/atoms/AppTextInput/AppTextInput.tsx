@@ -1,13 +1,14 @@
 import {TextInput, TextInputProps} from 'react-native';
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {useTheme} from '@react-navigation/native';
 
 type TProps = TextInputProps & {};
-export default function AppTextInput(props: TProps) {
+function Input(props: TProps, ref: any) {
   const {colors} = useTheme();
   return (
     <TextInput
       {...props}
+      ref={ref}
       style={[
         {
           height: 50,
@@ -23,3 +24,6 @@ export default function AppTextInput(props: TProps) {
     />
   );
 }
+
+const AppTextInput = forwardRef(Input);
+export default AppTextInput;

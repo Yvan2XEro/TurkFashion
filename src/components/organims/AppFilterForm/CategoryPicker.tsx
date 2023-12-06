@@ -11,11 +11,14 @@ import {universalFetch} from '@/lib/api/universalfetch';
 import {SubCategory} from '@/lib/api/sub-categories';
 import {Category} from '@/lib/api/categories';
 import {CategoryItem, CategoryItemSkeleton} from './CategoryItem';
+import {AppButton} from '@/components/atoms/AppButton';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type TProps = {
   onClose: () => void;
 };
 export default function CategoryPicker({onClose}: TProps) {
+  const insets = useSafeAreaInsets();
   const theme = useTheme();
   const {isLoading, data: subCategories} = useQuery({
     queryKey: ['sub-categories'],
@@ -51,7 +54,7 @@ export default function CategoryPicker({onClose}: TProps) {
   }, [subCategories?.data, activeSubCategory]);
 
   function RenderContent() {
-    if (isLoading) {
+    if (isLoading || categoriesPending) {
       return (
         <>
           {Array.from({length: 10}).map((_, i) => (
@@ -189,6 +192,20 @@ export default function CategoryPicker({onClose}: TProps) {
           <RenderContent />
         </View>
       </BottomSheetScrollView>
+      {!!category && (
+        <View style={[{paddingBottom: insets.bottom + 24, padding: 24}]}>
+          <AppButton onPress={onClose}>
+            <Text
+              style={{
+                color: theme.colors.background,
+                fontSize: 16,
+                textAlign: 'center',
+              }}>
+              All in [{category.name}]
+            </Text>
+          </AppButton>
+        </View>
+      )}
     </View>
   );
 }

@@ -11,6 +11,7 @@ type TokensPayload = {
 const AppAuthContextValue = {
   logout: async () => {},
   authenticate: async (cred: TokensPayload) => {},
+  fetchCurrentUser: async () => {},
 };
 const AppAuthContext = React.createContext(AppAuthContextValue);
 export function AppAuthProvider({children}: PropsWithChildren) {
@@ -55,7 +56,7 @@ export function AppAuthProvider({children}: PropsWithChildren) {
   }
 
   return (
-    <AppAuthContext.Provider value={{logout, authenticate}}>
+    <AppAuthContext.Provider value={{logout, authenticate, fetchCurrentUser}}>
       {children}
     </AppAuthContext.Provider>
   );

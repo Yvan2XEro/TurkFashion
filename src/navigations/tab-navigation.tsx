@@ -52,7 +52,7 @@ export default function HomeStack() {
         name="HomeScreen"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({color, focused}) => (
+          tabBarIcon: ({focused}) => (
             <CustomBottomTabBarButton
               active={focused}
               label="Home"
@@ -67,7 +67,7 @@ export default function HomeStack() {
         name="CartScreen"
         component={CartScreen}
         options={{
-          tabBarIcon: ({color, focused}) => (
+          tabBarIcon: ({focused}) => (
             <View>
               <CountInCartBadge />
               <CustomBottomTabBarButton
@@ -85,7 +85,7 @@ export default function HomeStack() {
         name="PaymentScreen"
         component={PaymentScreen}
         options={{
-          tabBarIcon: ({color, focused}) => (
+          tabBarIcon: ({focused}) => (
             <CustomBottomTabBarButton
               active={focused}
               label="Payments"
@@ -100,7 +100,7 @@ export default function HomeStack() {
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({color, focused}) => (
+          tabBarIcon: ({focused}) => (
             <CustomBottomTabBarButton
               active={focused}
               label="Profile"

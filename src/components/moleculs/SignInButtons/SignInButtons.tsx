@@ -27,8 +27,6 @@ export default function SignInButtons() {
       const userInfos = await GoogleSignin.signIn();
 
       if (!!userInfos.idToken) {
-        console.log('ISISIS', userInfos);
-
         const cred = await googleAuth(userInfos);
 
         await authenticate(cred);

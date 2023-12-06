@@ -1,10 +1,14 @@
 import {AppSheetBackdrop} from '@/components/atoms/AppSheetBackdrop';
-import {SCREEN_PADDING_HORIZONTAL} from '@/constants';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {useTheme} from '@react-navigation/native';
-import React, {PropsWithChildren, useCallback, useRef, useState} from 'react';
-import {View} from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useNavigation, useTheme} from '@react-navigation/native';
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
+import {BackHandler} from 'react-native';
 
 const AppBottomSheetContext = React.createContext({
   presentAppBottomSheet: (c: React.ReactNode) => {},
@@ -14,8 +18,30 @@ const AppBottomSheetContext = React.createContext({
 export function AppBottomSheetProvider({children}: PropsWithChildren) {
   const {colors} = useTheme();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const navigation = useNavigation();
 
   const [component, setComponent] = useState<React.ReactNode>();
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (component) {
+          dismissAppBottomSheet();
+          return true;
+        }
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+          return true;
+        }
+        return false;
+      },
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, [component]);
 
   const presentAppBottomSheet = useCallback(
     (c: React.ReactNode) => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {
   NavigationContainer,
   Theme,
@@ -13,11 +13,15 @@ import {
 import HomeStack, {TabsStackParamList} from './tab-navigation';
 import {StatusBar, useColorScheme} from 'react-native';
 import {DetailsScreen} from '@/screens/DetailsScreen';
-import AuthNavigator from './auth-navigator';
-import {useAuthStore} from '@/store/useAuthStore';
 import AppProviders from '@/context/AppProviders';
 import SearchScreen from '@/screens/SearchScreen';
 import useTokenRefresher from '@/hooks/useTokenRefresher';
+import Toast from 'react-native-toast-message';
+import EditProfileScreen from '@/screens/EditProfileScreen';
+import {setRootViewBackgroundColor} from '@pnthach95/react-native-root-view-background';
+import LoginScreen from '@/screens/LoginScreen';
+import RegisterScreen from '@/screens/RegisterScreen';
+import InfoScreen from '@/screens/InfoScreen';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;
@@ -25,6 +29,10 @@ export type RootStackParamList = {
     id: number;
   };
   SearchScreen: undefined;
+  EditProfileScreen: undefined;
+  LoginScreen: undefined;
+  RegisterScreen: undefined;
+  InfoScreen: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -34,17 +42,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigationWithoutContainer() {
   useTokenRefresher();
   const colorScheme = useColorScheme();
-  const {user} = useAuthStore();
-  console.log('USER', user);
 
-  if (!user) {
-    return (
-      <>
-        <StatusBar translucent backgroundColor="transparent" />
-        <AuthNavigator />
-      </>
-    );
-  }
   return (
     <>
       <Stack.Navigator initialRouteName="TabsStack">
@@ -62,6 +60,14 @@ function RootNavigationWithoutContainer() {
           component={SearchScreen}
           options={{
             headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="EditProfileScreen"
+          component={EditProfileScreen}
+          options={{
+            headerShadowVisible: false,
+            title: 'Edit Profile',
           }}
         />
       </Stack.Navigator>
@@ -98,11 +104,15 @@ export default function RootNavigation() {
           },
     [colorScheme],
   );
+  useEffect(() => {
+    setRootViewBackgroundColor(theme.colors.background);
+  }, [theme]);
 
   return (
     <NavigationContainer theme={theme}>
       <AppProviders>
         <RootNavigationWithoutContainer />
+        <Toast />
       </AppProviders>
     </NavigationContainer>
   );
