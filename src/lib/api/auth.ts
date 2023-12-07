@@ -36,6 +36,7 @@ export type User = {
     isStaff: boolean
     provider: string
     externalId: null
+    phone?: string
 }
 
 

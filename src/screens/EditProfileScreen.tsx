@@ -4,8 +4,8 @@ import {useTheme} from '@react-navigation/native';
 import {SCREEN_PADDING_HORIZONTAL} from '@/constants';
 import {useAppBottomSheet} from '@/context/app-bottom-sheet';
 import {useAuthStore} from '@/store/useAuthStore';
-import EditName from '@/components/moleculs/EditProfilForms/EditName';
 import {TouchableOpacity} from 'react-native';
+import {EditName, EditPhone} from '@/components/moleculs/EditProfilForms';
 
 export default function EditProfileScreen() {
   const {presentAppBottomSheet, dismissAppBottomSheet} = useAppBottomSheet();
@@ -29,11 +29,18 @@ export default function EditProfileScreen() {
           }
         />
         <EditFieldTrigger
-          value={user?.name}
+          value={user?.phone}
           label="Phone number"
           onPress={() =>
             presentAppBottomSheet(
-              <EditName value={user?.name} onSuccess={dismissAppBottomSheet} />,
+              <FormWrapper
+                onCancel={dismissAppBottomSheet}
+                title="Edit phone number">
+                <EditPhone
+                  value={user?.phone}
+                  onSuccess={dismissAppBottomSheet}
+                />
+              </FormWrapper>,
             )
           }
         />

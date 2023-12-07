@@ -20,7 +20,7 @@ type TProps = {
   value?: string;
   onSuccess: () => void;
 };
-export default function EditName({value, onSuccess}: TProps) {
+export default function EditPhone({value, onSuccess}: TProps) {
   const {colors} = useTheme();
   const {mutation, submit} = useEditProfile({onSuccess});
 
