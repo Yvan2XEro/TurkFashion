@@ -5,12 +5,19 @@ import {useAuthStore} from '@/store/useAuthStore';
 import {useTheme} from '@react-navigation/native';
 import {AppAvatar} from '@/components/atoms/AppAvatar';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-import useAppAuth from '@/hooks/useAppAuth';
+import {useAppAuth} from '@/context/app-auth';
+import {TabsStackScreenProps} from '@/navigations/tab-navigation';
+import {useAppBottomSheet} from '@/context/app-bottom-sheet';
+import LoginScreen from './LoginScreen';
+import RegisterScreen from './RegisterScreen';
 
-export default function ProfileScreen() {
+type TProps = TabsStackScreenProps<'ProfileScreen'>;
+
+export default function ProfileScreen({navigation}: TProps) {
   const {user} = useAuthStore();
   const {logout} = useAppAuth();
   const {colors} = useTheme();
+  const {presentAppBottomSheet} = useAppBottomSheet();
 
   return (
     <AnimatedHeaderWrapper title="Profil">
@@ -35,17 +42,65 @@ export default function ProfileScreen() {
             numberOfLines={1}>
             {user?.name || 'Guest'}
           </Text>
-          <Pressable>
-            <Text
-              style={{
-                color: colors.text,
-                opacity: 0.75,
-                textDecorationLine: 'underline',
-              }}
-              numberOfLines={1}>
-              Edit your profile
-            </Text>
-          </Pressable>
+          <View>
+            {!!user && (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('EditProfileScreen');
+                }}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    opacity: 0.75,
+                    textDecorationLine: 'underline',
+                  }}
+                  numberOfLines={1}>
+                  Edit your profile
+                </Text>
+              </Pressable>
+            )}
+            {!user && (
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                <Pressable
+                  onPress={() => {
+                    presentAppBottomSheet(<LoginScreen />);
+                  }}>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      opacity: 0.75,
+                      paddingHorizontal: 10,
+                      borderWidth: 1,
+                      borderColor: colors.border,
+                      borderRadius: 8,
+                      textDecorationLine: 'underline',
+                    }}
+                    numberOfLines={1}>
+                    Login
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    presentAppBottomSheet(<RegisterScreen />);
+                  }}>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      opacity: 0.75,
+                      paddingHorizontal: 10,
+                      borderWidth: 1,
+                      borderColor: colors.border,
+                      borderRadius: 8,
+                      textDecorationLine: 'underline',
+                    }}
+                    numberOfLines={1}>
+                    Register
+                  </Text>
+                </Pressable>
+              </View>
+            )}
+          </View>
         </View>
       </View>
 
@@ -65,13 +120,13 @@ export default function ProfileScreen() {
   );
 }
 
-type TProps = {
+type MenuItemTProps = {
   ionIcon: string;
   label: string;
   onPress: () => void;
 };
 
-function MenuItem({ionIcon, label, onPress}: TProps) {
+function MenuItem({ionIcon, label, onPress}: MenuItemTProps) {
   const {colors} = useTheme();
 
   return (

@@ -1,20 +1,24 @@
 import {useAppAuth} from '@/context/app-auth';
-import {LoginPayload, credentialsSignIn} from '@/lib/api/auth';
+import {
+  LoginPayload,
+  RegisterPayload,
+  credentialsSignIn,
+  register,
+} from '@/lib/api/auth';
 import {useMutation} from 'react-query';
 import {useState} from 'react';
 import {notify} from '@/lib/utils/notify';
 import {useAppBottomSheet} from '@/context/app-bottom-sheet';
+import {useLoginForm} from '../LoginForm';
 
-export default function useLoginForm() {
+export default function useRegisterForm() {
   const {authenticate: autthenticate} = useAppAuth();
+  const {mutation: loginMutation, onSubmit: handleLogin} = useLoginForm();
   const [passwordVisible, setpasswordVisible] = useState(false);
   const {dismissAppBottomSheet} = useAppBottomSheet();
   const mutation = useMutation({
-    mutationFn: credentialsSignIn,
-    async onSuccess(data) {
-      await autthenticate(data);
-      dismissAppBottomSheet();
-    },
+    mutationFn: register,
+
     onError: (data: any) => {
       if (data.statusCode === 401)
         return notify({
@@ -33,11 +37,16 @@ export default function useLoginForm() {
     },
   });
 
-  async function onSubmit(data: LoginPayload) {
+  async function onSubmit(data: RegisterPayload) {
     if (mutation.isLoading) {
       return;
     }
-    await mutation.mutateAsync(data);
+    const {confirmPassword, ...rest} = data;
+    await mutation.mutateAsync(rest);
+    if (mutation.isSuccess) {
+      await handleLogin({email: data.email, password: data.password});
+      dismissAppBottomSheet();
+    }
   }
   return {
     passwordVisible,

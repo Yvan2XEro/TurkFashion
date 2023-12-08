@@ -26,13 +26,13 @@ export default function ProductsList(props: TProps) {
     }
     return `${filterQueryParams}${q.length > 0 ? '&q=' + q : ''}`;
   }, [selectedSubCategory, filterQueryParams, q, search]);
-  console.log(handledQueryParams);
 
   const {
     data: products,
     refetch,
     isLoading,
   } = useQuery({
+    enabled: !search || (search && q?.length > 0),
     queryKey: ['products', 'sub-category', handledQueryParams],
     queryFn: () =>
       universalFetch<Product>({

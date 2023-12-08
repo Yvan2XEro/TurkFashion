@@ -71,7 +71,7 @@ export default function SearchScreen({navigation}: TProps) {
         <AppFilterButton />
       </View>
 
-      {/* <ProductsList selectedSubCategory={null} q={q} search /> */}
+      <ProductsList selectedSubCategory={null} q={q} search />
     </View>
   );
 }
