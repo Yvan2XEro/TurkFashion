@@ -4,7 +4,6 @@ import {useTheme} from '@react-navigation/native';
 import {SCREEN_PADDING_HORIZONTAL} from '@/constants';
 import {useAppBottomSheet} from '@/context/app-bottom-sheet';
 import {useAuthStore} from '@/store/useAuthStore';
-import {TouchableOpacity} from 'react-native';
 import {EditName, EditPhone} from '@/components/moleculs/EditProfilForms';
 
 export default function EditProfileScreen() {

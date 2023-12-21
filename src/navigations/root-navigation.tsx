@@ -19,9 +19,8 @@ import useTokenRefresher from '@/hooks/useTokenRefresher';
 import Toast from 'react-native-toast-message';
 import EditProfileScreen from '@/screens/EditProfileScreen';
 import {setRootViewBackgroundColor} from '@pnthach95/react-native-root-view-background';
-import LoginScreen from '@/screens/LoginScreen';
-import RegisterScreen from '@/screens/RegisterScreen';
-import InfoScreen from '@/screens/InfoScreen';
+import AddressesScreen from '@/screens/AddressesScreen';
+import {NewAddressButton} from '@/components/moleculs/NewAddressButton';
 
 export type RootStackParamList = {
   TabsStack: NavigatorScreenParams<TabsStackParamList>;
@@ -33,6 +32,7 @@ export type RootStackParamList = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
   InfoScreen: undefined;
+  AddressesScreen: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -68,6 +68,15 @@ function RootNavigationWithoutContainer() {
           options={{
             headerShadowVisible: false,
             title: 'Edit Profile',
+          }}
+        />
+        <Stack.Screen
+          name="AddressesScreen"
+          component={AddressesScreen}
+          options={{
+            headerShadowVisible: false,
+            title: 'Addresses',
+            headerRight: () => <NewAddressButton />,
           }}
         />
       </Stack.Navigator>

@@ -107,7 +107,7 @@ export default function ProfileScreen({navigation}: TProps) {
       <MenuItem
         ionIcon="location-outline"
         label="Addresses"
-        onPress={() => {}}
+        onPress={() => navigation.navigate('AddressesScreen')}
       />
       <MenuItem ionIcon="wallet-outline" label="Orders" onPress={() => {}} />
       <MenuItem

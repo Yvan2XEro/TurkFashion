@@ -9,12 +9,11 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {AppButton} from '@/components/atoms/AppButton';
 import useEditProfile from './useEditProfile';
 import {ActivityIndicator} from 'react-native';
+import PhoneInput from 'react-native-phone-input';
+import {getCountry} from 'react-native-localize';
 
 const schema = z.object({
-  name: z
-    .string()
-    .min(3, {message: 'Name must be at least 3 characters'})
-    .max(30, {message: 'Name must be at most 30 characters'}),
+  phone: z.string(),
 });
 type TProps = {
   value?: string;
@@ -31,21 +30,62 @@ export default function EditPhone({value, onSuccess}: TProps) {
       name: value,
     },
   });
-
   return (
     <View>
       <Controller
         control={form.control}
-        name="name"
+        name="phone"
         render={({field: {onChange, onBlur, value}}) => (
           <>
             <Text style={{color: colors.text}}>Name :</Text>
-            <AppTextInput
-              placeholder="Enter your name"
-              onChangeText={onChange}
-              autoFocus
-              value={value}
-              onBlur={onBlur}
+            <PhoneInput
+              style={{
+                height: 50,
+                borderColor: colors.border,
+                borderWidth: 1,
+                borderRadius: 10,
+                paddingHorizontal: 16,
+              }}
+              onChangePhoneNumber={onChange}
+              countriesList={[
+                {
+                  name: 'Niger (Nijar)',
+                  iso2: 'ne',
+                  dialCode: '227',
+                  priority: 0,
+                  areaCodes: null,
+                },
+                {
+                  name: 'Cameroon (Cameroun)',
+                  iso2: 'cm',
+                  dialCode: '237',
+                  priority: 0,
+                  areaCodes: null,
+                },
+                {
+                  name: 'Turkey (Türkiye)',
+                  iso2: 'tr',
+                  dialCode: '90',
+                  priority: 0,
+                  areaCodes: null,
+                },
+                {
+                  name: 'Turkmenistan',
+                  iso2: 'tm',
+                  dialCode: '993',
+                  priority: 0,
+                  areaCodes: null,
+                },
+                {
+                  name: 'Turks and Caicos Islands',
+                  iso2: 'tc',
+                  dialCode: '1649',
+                  priority: 0,
+                  areaCodes: null,
+                },
+              ]}
+              initialValue={'+39'}
+              initialCountry={getCountry()}
             />
           </>
         )}
