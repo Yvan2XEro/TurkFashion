@@ -22,6 +22,15 @@ export default function EditAddressForm({data}: TProps) {
 
   const form = useForm<AddressPayload>({
     resolver: zodResolver(addressSchema),
+    values: !!data
+      ? {
+          address: data.address,
+          city: data.city.id,
+          label: data.label,
+          name: data.name,
+          phone: data.phone,
+        }
+      : undefined,
   });
   const deliverablesCitiesQuery = useQuery({
     queryKey: ['deliverablesCities'],
@@ -33,7 +42,9 @@ export default function EditAddressForm({data}: TProps) {
   });
 
   const [countries, setCountries] = React.useState<string[]>([]);
-  const [selectedCountry, setSelectedCountry] = React.useState<string>('');
+  const [selectedCountry, setSelectedCountry] = React.useState<string>(
+    data?.city.country || '',
+  );
 
   const citiesByCountries = useMemo(() => {
     const map = new Map<string, City[]>();

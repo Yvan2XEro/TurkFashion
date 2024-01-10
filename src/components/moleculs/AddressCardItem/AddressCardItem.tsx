@@ -5,6 +5,7 @@ import {useTheme} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {Address} from '@/lib/api/address';
 import {AppCheckbox} from '@/components/atoms/AppCheckbox';
+import AddressCardMenu from './AddressCardMenu';
 
 type TProps = {
   data: Address;
@@ -42,9 +43,7 @@ export default function AddressCardItem({data, onPress, selected}: TProps) {
             {data.label}
           </Text>
         </View>
-        <Pressable>
-          <IonIcons color={colors.text} size={18} name="pencil" />
-        </Pressable>
+        <AddressCardMenu data={data} />
       </View>
       <View>
         <Text style={{color: colors.text}}>

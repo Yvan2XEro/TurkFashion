@@ -8,8 +8,9 @@ import { fetchWithAuth } from "@/lib/api/app-fetch";
 export default function useCartCount() {
     const { items } = useCartStore()
 
-    const { data: products, isLoading } = useQuery({
+    const { data: products } = useQuery({
         queryKey: ['products', Object.keys(items)],
+        enabled: Object.keys(items).length >= 1,
         queryFn: async () => {
             try {
                 const response = await fetchWithAuth(

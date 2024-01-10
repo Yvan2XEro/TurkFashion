@@ -14,7 +14,7 @@ export default function CartScreen() {
 
   const {data: products, isLoading} = useQuery({
     queryKey: ['products', Object.keys(items)],
-    enabled: Object.keys(items).length > 0,
+    enabled: Object.keys(items).length >= 1,
     queryFn: async () => {
       try {
         const response = await fetchWithAuth(
