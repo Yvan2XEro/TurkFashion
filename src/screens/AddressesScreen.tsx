@@ -1,5 +1,5 @@
 import {View, Text, Pressable} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SCREEN_PADDING_HORIZONTAL} from '@/constants';
 import {FlashList} from '@shopify/flash-list';
 import {useTheme} from '@react-navigation/native';
@@ -12,6 +12,8 @@ import {
   AddressCardItem,
   AddressCardItemSkeleton,
 } from '@/components/moleculs/AddressCardItem';
+import {useDefaultAddressStore} from '@/store/useDefaultAddressStore';
+import {FlatList} from 'react-native';
 
 export default function AddressesScreen() {
   const {user} = useAuthStore();
@@ -24,7 +26,16 @@ export default function AddressesScreen() {
       });
     },
   });
-  console.log(addressesQuery.data);
+  const {id: defaultAddressId, setDefaultAddress} = useDefaultAddressStore();
+  useEffect(() => {
+    if (
+      !defaultAddressId &&
+      !!addressesQuery.data &&
+      addressesQuery.data.length > 0
+    )
+      setDefaultAddress(addressesQuery.data?.[0]?.id);
+  }, [addressesQuery.data, defaultAddressId]);
+
   return (
     <View style={{paddingHorizontal: SCREEN_PADDING_HORIZONTAL, flex: 1}}>
       {addressesQuery.isLoading && (
@@ -37,11 +48,16 @@ export default function AddressesScreen() {
       )}
       {/* TODO: Empty state */}
       {!!addressesQuery.data && addressesQuery.data.length > 0 && (
-        <FlashList
+        <FlatList
           data={addressesQuery.data}
-          estimatedItemSize={addressesQuery.data?.length || 0}
           renderItem={({item}) => (
-            <AddressCardItem data={item} selected={false} onPress={() => {}} />
+            <AddressCardItem
+              data={item}
+              selected={item.id === defaultAddressId}
+              onPress={() => {
+                setDefaultAddress(item.id);
+              }}
+            />
           )}
           showsVerticalScrollIndicator={false}
         />

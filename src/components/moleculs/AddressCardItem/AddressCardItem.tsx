@@ -4,6 +4,7 @@ import {View, Text, Pressable} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {Address} from '@/lib/api/address';
+import {AppCheckbox} from '@/components/atoms/AppCheckbox';
 
 type TProps = {
   data: Address;
@@ -13,16 +14,15 @@ type TProps = {
 export default function AddressCardItem({data, onPress, selected}: TProps) {
   const {colors} = useTheme();
   return (
-    <Pressable
+    <View
       style={{
         padding: 16,
         borderRadius: 8,
         backgroundColor: colors.card,
         marginVertical: 10,
         borderWidth: selected ? 1 : 0,
-        borderColor: colors.border,
-      }}
-      onPress={onPress}>
+        borderColor: colors.primary,
+      }}>
       <View
         style={{
           flexDirection: 'row',
@@ -37,24 +37,7 @@ export default function AddressCardItem({data, onPress, selected}: TProps) {
             gap: 16,
             alignItems: 'center',
           }}>
-          <View
-            style={{
-              backgroundColor: colors.primary,
-              height: 20,
-              width: 20,
-              borderRadius: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <View
-              style={{
-                height: 10,
-                width: 10,
-                borderRadius: 10,
-                backgroundColor: selected ? colors.background : colors.primary,
-              }}
-            />
-          </View>
+          <AppCheckbox checked={selected} onChange={onPress} />
           <Text style={{color: colors.text, fontWeight: '600'}}>
             {data.label}
           </Text>
@@ -68,6 +51,6 @@ export default function AddressCardItem({data, onPress, selected}: TProps) {
           {data.city.name}: {data.address} | {data.phone}
         </Text>
       </View>
-    </Pressable>
+    </View>
   );
 }
